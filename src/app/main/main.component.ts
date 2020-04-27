@@ -9,19 +9,24 @@ declare var d3;
 })
 export class MainComponent implements OnInit, AfterViewInit {
   types = [
-    "Input",
-    "Output",
-    "InputOutput",
-    "Process",
-    "Board"
+    "Data Model",
+    "Audit Rules",
+    "Contextual Rules",
+    "Role type x",
+    // "Board"
   ];
 
   colors = {
-    "Input": "#f2f2f2",
-    "Output": "#fbe5d6",
-    "InputOutput": "#e2f0d9",
-    "Process": "#b4c7e7",
-    "Board": "#ffe699"
+    "Data Model": "#fec003",
+    "Audit Rules": "#ff0300",
+    "Contextual Rules": "#93d052",
+    "Role type x": "#d9edf8",
+  }
+  text = {
+    "Data Model": "#000",
+    "Audit Rules": "#fff",
+    "Contextual Rules": "#fff",
+    "Role type x": "#000",
   }
 
   picture;
@@ -270,11 +275,11 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     this.data.forEach((element, index, arr) => {
       switch (element.objectClass) {
-        case "Input":
-        case "Output":
-        case "InputOutput":
-        case "Process":
-        case "Board":
+        case "Data Model":
+        case "Audit Rules":
+        case "Contextual Rules":
+        case "Role type x":
+        // case "Board":
           let d, dx, dy, color;
           dx = element.x - 10;
           dy = element.y - 8;

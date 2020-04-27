@@ -1,22 +1,30 @@
 <div class="bpm-wrap">
-    <div class="palette-entries">
-      <div *ngFor="let item of types" class="bpm-item">
-        <div [id]="item" [draggable]="true" [ngStyle]="{'background': colors[item]}"
-         class="square" [title]="item" tooltipPosition="top">
+  <div class="palette-entries">
+    <div *ngFor="let item of types" class="bpm-item">
+      <div [id]="item" [draggable]="true" [ngStyle]="{'color': text[item], 'background': colors[item]}"  class="square" [title]="item"
+        tooltipPosition="top">
         {{item}}
-        </div>
       </div>
     </div>
-    <div class="coco-bpm-graph" id="graph" style="height: calc(100vh - 60px);"></div>
-    <!-- <div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div> -->
-    <div (click)="showSide = !showSide" class="toggle-sidebar-btn" [ngClass]="{ 'active': showSide }">
-      <a mat-raised-button>
-        <i class="material-icons">
-          menu_open
-        </i>
-      </a>
-    </div>
-    <div [ngClass]="{ show: showSide }" *ngIf="selectedModal" class="sidebar show">
-   23
+    <div class="el_wrap">
+      <div class="rhombus-wrap">
+        <p class="m-text">AND</p>
+      </div>
+      <div class="rhombus-wrap">
+        <p class="m-text">or</p>
+      </div>
     </div>
   </div>
+  <div class="coco-bpm-graph" id="graph" style="height: calc(100vh - 60px);"></div>
+  <!-- <div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div> -->
+  <div (click)="showSide = !showSide" class="toggle-sidebar-btn" [ngClass]="{ 'active': showSide }">
+    <a mat-raised-button>
+      <i class="material-icons">
+        menu_open
+      </i>
+    </a>
+  </div>
+  <div [ngClass]="{ show: showSide }" *ngIf="selectedModal" class="sidebar show">
+    23
+  </div>
+</div>
