@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "bpm": {
@@ -30,7 +30,16 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/d3/dist/d3.min.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/d3-path/dist/d3-path.min.js",
+              "node_modules/d3-dispatch/dist/d3-dispatch.min.js",
+              "node_modules/d3-selection/dist/d3-selection.min.js",
+              "node_modules/d3-drag/dist/d3-drag.min.js",
+              "node_modules/d3-transition/dist/d3-transition.min.js",
+              "node_modules/jquery/dist/jquery.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -123,6 +132,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "bpm"
+    }
+  },
+  "defaultProject": "bpm",
+  "cli": {
+    "analytics": false
+  }
 }
