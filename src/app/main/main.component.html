@@ -15,16 +15,49 @@
       </div>
     </div>
   </div>
-  <div class="coco-bpm-graph" id="graph" style="height: calc(100vh - 60px);"></div>
+  <div class="coco-bpm-graph" id="graph"></div>
   <!-- <div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div> -->
   <div (click)="showSide = !showSide" class="toggle-sidebar-btn" [ngClass]="{ 'active': showSide }">
     <a mat-raised-button>
-      <i class="material-icons">
-        menu_open
-      </i>
+      <span class="icons">
+        <img src="/assets/subject-black.svg">
+        </span>
     </a>
   </div>
   <div [ngClass]="{ show: showSide }" *ngIf="selectedModal" class="sidebar show">
-    23
+    <div class="cont__wrap">
+      <p class="m-title">Rule Details</p>
+      <div class="rule-row__gen">
+        <label for="key" class="r-name">Key</label>
+        <input type="text" class="input-gen" placeholder="key" id="key">
+      </div>
+      <div class="rule-row__gen">
+        <label for="name" class="r-name">Name</label>
+        <input type="text" class="input-gen" placeholder="Name" id="name">
+      </div>
+      <div class="rule-row__gen">
+        <label for="description" class="r-name">Description</label>
+        <textarea type="text" class="input-gen" placeholder="Description" id="description"></textarea>
+      </div>
+      <div class="rule-row__gen">
+        <label for="type" class="r-name">Type</label>
+        <select type="text" class="input-gen sel" placeholder="" id="type">
+          <option>Boolean</option>
+          <option>String</option>
+        </select>
+      </div>
+      <div class="rule-row__gen">
+        <label for="operation" class="r-name">Operation</label>
+        <select type="text" class="input-gen sel" placeholder="" id="operation">
+          <option>equals</option>
+          <option>multiply</option>
+        </select>
+      </div>
+      <div class="rule-row__gen">
+        <label for="value" class="r-name">Value</label>
+        <input type="text" class="input-gen" placeholder="Value" id="value">
+      </div>
+    </div>
+    <button class="save-btn">Save</button>
   </div>
 </div>
