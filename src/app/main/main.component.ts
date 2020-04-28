@@ -301,6 +301,13 @@ export class MainComponent implements OnInit, AfterViewInit {
             .attr("height", h)
             .attr("rx", 10)
             .attr("ry", 10)
+            .call(
+              d3
+                .drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended)
+            )
             .on("mouseover", (q, w, e) => {
               d3.event.stopPropagation();
               if (this.activeArrow) {
@@ -341,10 +348,10 @@ export class MainComponent implements OnInit, AfterViewInit {
               this.startDrowLine = null;
             });
 
-          g.append("text")
-            .attr("x", element.x - 5)
-            .attr("y", element.y - 13)
-            .text((element.name || element.id));
+          // g.append("text")
+          //   .attr("x", element.x - 5)
+          //   .attr("y", element.y - 13)
+          //   .text((element.name || element.id));
 
           g.append("text")
             .attr("id", index + "-remove")
@@ -397,31 +404,31 @@ export class MainComponent implements OnInit, AfterViewInit {
               // });
             });
 
-          g.append("text")
-            .attr("id", index + "-arrow")
-            .attr("x", element.x + 135)
-            .attr("y", element.y + 5)
-            .text("=>")
-            .attr("cursor", "pointer")
-            .on("click", (d, i, s) => {
-              d3.event.stopPropagation();
-              let id = s[0].id.split("-")[0];
-              this.shepClick(id);
-            });
+          // g.append("text")
+          //   .attr("id", index + "-arrow")
+          //   .attr("x", element.x + 135)
+          //   .attr("y", element.y + 5)
+          //   .text("=>")
+          //   .attr("cursor", "pointer")
+          //   .on("click", (d, i, s) => {
+          //     d3.event.stopPropagation();
+          //     let id = s[0].id.split("-")[0];
+          //     this.shepClick(id);
+          //   });
 
-          g.append("text")
-            .attr("id", index + "-drag")
-            .attr("x", element.x)
-            .attr("y", element.y + 5)
-            .text("|||")
-            .attr("cursor", "pointer")
-            .call(
-              d3
-                .drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended)
-            );
+          // g.append("text")
+          //   .attr("id", index + "-drag")
+          //   .attr("x", element.x)
+          //   .attr("y", element.y + 5)
+          //   .text("|||")
+          //   .attr("cursor", "pointer")
+          //   .call(
+          //     d3
+          //       .drag()
+          //       .on("start", dragstarted)
+          //       .on("drag", dragged)
+          //       .on("end", dragended)
+          //   );
 
           break;
 
@@ -719,7 +726,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   shepClick(s) {
     this.selected = s;
     let id = this.selected;
-    if (!this.activeArrow) {
+    if (!this.startDrowLine) {
       this.activeArrow = id;
       this.startDrowLine = id;
     } else {
@@ -773,5 +780,9 @@ export class MainComponent implements OnInit, AfterViewInit {
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
+  }
+
+  arrowSelect() {
+    this.activeArrow = true;
   }
 }
