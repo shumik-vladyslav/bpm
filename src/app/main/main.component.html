@@ -7,17 +7,16 @@
       </div>
     </div>
     <div class="el_wrap">
-      <div class="rhombus-wrap">
+      <div id="AND" class="rhombus-wrap" [draggable]="true">
         <p class="m-text">AND</p>
       </div>
-      <div class="rhombus-wrap">
+      <div id="OR" class="rhombus-wrap" [draggable]="true">
         <p class="m-text">or</p>
       </div>
     </div>
     <div class="el_wrap">
       <div (click)="arrowSelect()">
-        <=
-      </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 11.871l-5-4.871v3h-19v4h19v3z"/></svg></div>
     </div>
   </div>
   <div class="coco-bpm-graph" id="graph"></div>
