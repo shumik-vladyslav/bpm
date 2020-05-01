@@ -1,0 +1,22 @@
+.textarea-wrap {
+  display: flex;
+  textarea {
+    height: 170px;
+    border: 1px solid #949494;
+    margin-bottom: -8px;
+    resize: none;
+    background: white;
+    position: relative;
+    z-index: 1;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+}
+.mat-form-field{
+    display: block;
+}
+button.func{
+    min-width: 0;
+    padding: 0 7px;
+    margin-top: 35px;
+}

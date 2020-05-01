@@ -28,40 +28,71 @@
         </span>
     </a>
   </div>
-  <div [ngClass]="{ show: showSide }" *ngIf="selectedModal" class="sidebar show">
+  <div [ngClass]="{ show: showSide }" *ngIf="selectedModal && newItem" class="sidebar show">
     <div class="cont__wrap">
       <p class="m-title">Rule Details</p>
-      <div class="rule-row__gen">
+      <div  class="rule-row__gen">
         <label for="key" class="r-name">Key</label>
-        <input type="text" class="input-gen" placeholder="key" id="key">
+        <input [(ngModel)]="newItem.key" type="text" class="input-gen" placeholder="key" id="key">
       </div>
-      <div class="rule-row__gen">
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
         <label for="name" class="r-name">Name</label>
         <input type="text" class="input-gen" placeholder="Name" id="name">
       </div>
-      <div class="rule-row__gen">
-        <label for="description" class="r-name">Description</label>
-        <textarea type="text" class="input-gen" placeholder="Description" id="description"></textarea>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+        <label for="name" class="r-name">Family Name</label>
+        <input type="text" class="input-gen" placeholder="Family Name" id="family_name">
       </div>
-      <div class="rule-row__gen">
-        <label for="type" class="r-name">Type</label>
-        <select type="text" class="input-gen sel" placeholder="" id="type">
-          <option>Boolean</option>
-          <option>String</option>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+        <label for="name" class="r-name">Email</label>
+        <input type="text" class="input-gen" placeholder="Email" id="email">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+        <label for="name" class="r-name">Email Varified</label>
+        <input type="checkbox" class="input-gen" placeholder="Email Varified" id="email_verified">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+        <label for="name" class="r-name">Phone Number</label>
+        <input type="text" class="input-gen" placeholder="Phone Number" id="phone_number">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+        <label for="name" class="r-name">Phone Number Varified</label>
+        <input type="checkbox" class="input-gen" placeholder="Phone Number Varified" id="phone_number_verified">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+        <label for="type" class="r-name">National Identifier Varified</label>
+        <select type="text" class="input-gen sel" placeholder="" id="national_identifier_verified">
+          <option>Weak</option>
+          <option>Fair</option>
+          <option>Strong</option>
+          <option>Superior</option>
         </select>
       </div>
-      <div class="rule-row__gen">
-        <label for="operation" class="r-name">Operation</label>
-        <select type="text" class="input-gen sel" placeholder="" id="operation">
-          <option>equals</option>
-          <option>multiply</option>
-        </select>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Audit Rules'" class="rule-row__gen">
+        <label for="key" class="r-name">Push</label>
+        <input type="text" class="input-gen" placeholder="Push" id="push">
       </div>
-      <div class="rule-row__gen">
-        <label for="value" class="r-name">Value</label>
-        <input type="text" class="input-gen" placeholder="Value" id="value">
+      <div *ngIf="data[this.selectedModal].objectClass === 'Audit Rules'" class="rule-row__gen">
+        <label for="key" class="r-name">oath</label>
+        <input type="text" class="input-gen" placeholder="oath" id="oath">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Audit Rules'" class="rule-row__gen">
+        <label for="key" class="r-name">otp sms</label>
+        <input type="text" class="input-gen" placeholder="otp sms" id="otp_sms">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Audit Rules'" class="rule-row__gen">
+        <label for="key" class="r-name">password</label>
+        <input type="text" class="input-gen" placeholder="password" id="password">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Contextual Rules' || data[this.selectedModal].objectClass === 'Role type x'" class="rule-row__gen">
+        <label for="key" class="r-name">numberOfAuthPwd</label>
+        <input type="number" class="input-gen" placeholder="numberOfAuthPwd" id="numberOfAuthPwd">
+      </div>
+      <div *ngIf="data[this.selectedModal].objectClass === 'Contextual Rules' || data[this.selectedModal].objectClass === 'Role type x'" class="rule-row__gen">
+        <label for="key" class="r-name">numberOfAuthPush</label>
+        <input type="number" class="input-gen" placeholder="numberOfAuthPush" id="numberOfAuthPush">
       </div>
     </div>
-    <button class="save-btn">Save</button>
+    <button class="save-btn" (click)="saveForm()">Save</button>
   </div>
 </div>

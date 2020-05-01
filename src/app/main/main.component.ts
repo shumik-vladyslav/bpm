@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ComponentClass } from '../shared/model/component.mode';
+import { DialogCreateModelComponent } from '../shared/dialog-create-model/dialog-create-model.component';
+import { MatDialog } from '@angular/material/dialog';
 declare var d3;
 
 @Component({
@@ -56,8 +58,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   modelsKeys = {};
   dataCopy;
   selectedModalObj;
+  newItem;
 
-  constructor() { }
+  constructor( public dialog: MatDialog,) { }
 
   ngOnInit(): void {
   }
@@ -343,8 +346,10 @@ export class MainComponent implements OnInit, AfterViewInit {
                 this.shepClick(s[0].id);
             })
             .on("dblclick", (d, i, s) => {
+              this.newItem = new ComponentClass();
+              this.newItem.key = "";
               this.selectedModal = s[0].id;
-              let name = this.data[this.selectedModal].objectClass + (this.data[this.selectedModal].parameters.length + 1);
+              let name = this.data[this.selectedModal].objectClass;
               this.showSide = true;
               this.selected = s[0].id;
               this.removeAll();
@@ -365,7 +370,14 @@ export class MainComponent implements OnInit, AfterViewInit {
           //   .attr("x", element.x - 5)
           //   .attr("y", element.y - 13)
           //   .text((element.name || element.id));
-
+            if(element.key){
+            g.append("text")
+              .attr("id", index + "-")
+              .attr("x", element.x + 40)
+              .attr("y", element.y + 13)
+              .text(element.key)
+              .attr("cursor", "pointer")
+            }
           g.append("text")
             .attr("id", index + "-remove")
             .attr("x", element.x + 140)
@@ -375,46 +387,22 @@ export class MainComponent implements OnInit, AfterViewInit {
             .on("click", (d, i, s) => {
               d3.event.stopPropagation();
               let id = s[0].id.split("-")[0];
-
              
-              // const dialogRef = this.dialog.open(DialogCreateModelComponent, {
-              //   width: '450px',
-              //   data: {
-              //     label: 'You delete the object! Are you sure?',
-              //     deleteMode: true
-              //   }
-              // });
-              // dialogRef.afterClosed().subscribe(model => {
-              //   if (model) {
-              //     this.saverComponent.push(JSON.parse(JSON.stringify( this.data )));
-              //     let observableList = [];
-              //     this.componentService.getAllByUserId(this.user._id).subscribe((data: any) => {
-              //       this.formulaData = data;
-              //       this.formulaData.forEach(comp => {
-              //         comp.parameters.forEach(param => {
-              //           if (param.value && param.value.charAt(0) === "=") {
-              //             this.data[id].parameters.forEach(p => {
-              //               let element = this.data[id].modelIdName + "." +
-              //               this.data[id].id + "." + p.id;
-              //               var re = new RegExp(element, 'g');
-              //               param.value = param.value.replace(re, "0");
-              //             });
-              //           }
-              //         });
-              //         observableList.push(this.componentService.update(comp));
-              //       });
-  
-              //       let obs = forkJoin(observableList);
-              //       obs.subscribe(t => {
-              //         this.componentService.delete(this.data[id]).subscribe((data) => {
-              //           this.selectedModal = null;
-              //           this.selected = null;
-              //           this.getData();
-              //         });
-              //       });
-              //     });
-              //   }
-              // });
+              const dialogRef = this.dialog.open(DialogCreateModelComponent, {
+                width: '450px',
+                data: {
+                  label: 'You delete the object! Are you sure?',
+                  deleteMode: true
+                }
+              });
+              dialogRef.afterClosed().subscribe(model => {
+                if (model) {
+                 console.log(model,id);
+                 this.data.splice(+id, 1);
+                 this.removeAll();
+                 this.drow();
+                }
+              });
             });
 
           // g.append("text")
@@ -790,6 +778,7 @@ export class MainComponent implements OnInit, AfterViewInit {
         model.objectClass = this.dragType;
         model.id = this.uuidv4();
         model.selected = [];
+        model.key = "";
        
         this.data.push(model);
         
@@ -904,5 +893,12 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   arrowSelect() {
     this.activeArrow = true;
+  }
+
+  saveForm(){
+    console.log(this.optionsModal[this.selectedModal]);
+    this.data[this.selectedModal].key = this.newItem.key;
+    this.removeAll();
+    this.drow();
   }
 }
