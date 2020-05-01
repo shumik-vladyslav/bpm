@@ -1,8 +1,8 @@
 <div class="bpm-wrap">
   <div class="palette-entries">
     <div *ngFor="let item of types" class="bpm-item">
-      <div [id]="item" [draggable]="true" [ngStyle]="{'color': text[item], 'background': colors[item]}"  class="square" [title]="item"
-        tooltipPosition="top">
+      <div [id]="item" [draggable]="true" [ngStyle]="{'color': text[item], 'background': colors[item]}" class="square"
+        [title]="item" tooltipPosition="top">
         {{item}}
       </div>
     </div>
@@ -15,8 +15,9 @@
       </div>
     </div>
     <div class="el_wrap">
-      <div (click)="arrowSelect()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 11.871l-5-4.871v3h-19v4h19v3z"/></svg></div>
+      <div style="cursor: pointer;" (click)="arrowSelect()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M24 11.871l-5-4.871v3h-19v4h19v3z" /></svg></div>
     </div>
   </div>
   <div class="coco-bpm-graph" id="graph"></div>
@@ -25,13 +26,13 @@
     <a mat-raised-button>
       <span class="icons">
         <img src="/assets/subject-black.svg">
-        </span>
+      </span>
     </a>
   </div>
   <div [ngClass]="{ show: showSide }" *ngIf="selectedModal && newItem" class="sidebar show">
     <div class="cont__wrap">
       <p class="m-title">Rule Details</p>
-      <div  class="rule-row__gen">
+      <div class="rule-row__gen">
         <label for="key" class="r-name">Key</label>
         <input [(ngModel)]="newItem.key" type="text" class="input-gen" placeholder="key" id="key">
       </div>
@@ -48,19 +49,30 @@
         <input type="text" class="input-gen" placeholder="Email" id="email">
       </div>
       <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
-        <label for="name" class="r-name">Email Varified</label>
-        <input type="checkbox" class="input-gen" placeholder="Email Varified" id="email_verified">
+        <label for="name" class="r-name">Email Verified</label>
+        <div class="form-checkbox__wrap">
+          <input type="checkbox" class="form-checkbox__subscribe" name="name" id="email_verified"
+          placeholder="Email Varified">
+          <label for="email_verified" class="form__link"></label>
+        </div>
+        <!-- <input type="checkbox" class="input-gen" placeholder="Email Varified" id="email_verified"> -->
       </div>
       <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
         <label for="name" class="r-name">Phone Number</label>
         <input type="text" class="input-gen" placeholder="Phone Number" id="phone_number">
       </div>
       <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
-        <label for="name" class="r-name">Phone Number Varified</label>
-        <input type="checkbox" class="input-gen" placeholder="Phone Number Varified" id="phone_number_verified">
+        <label for="name" class="r-name">Phone Number Verified</label>
+
+        <div class="form-checkbox__wrap">
+          <input type="checkbox" class="form-checkbox__subscribe" name="name" id="phone_number_verified"
+            placeholder="Phone Number Verified">
+          <label for="phone_number_verified" class="form__link"></label>
+          <!-- <input type="checkbox" class="input-gen" placeholder="Phone Number Verified" id="phone_number_verified"> -->
+        </div>
       </div>
       <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
-        <label for="type" class="r-name">National Identifier Varified</label>
+        <label for="type" class="r-name">National Identifier Verified</label>
         <select type="text" class="input-gen sel" placeholder="" id="national_identifier_verified">
           <option>Weak</option>
           <option>Fair</option>
@@ -84,11 +96,15 @@
         <label for="key" class="r-name">password</label>
         <input type="text" class="input-gen" placeholder="password" id="password">
       </div>
-      <div *ngIf="data[this.selectedModal].objectClass === 'Contextual Rules' || data[this.selectedModal].objectClass === 'Role type x'" class="rule-row__gen">
+      <div
+        *ngIf="data[this.selectedModal].objectClass === 'Contextual Rules' || data[this.selectedModal].objectClass === 'Role type x'"
+        class="rule-row__gen">
         <label for="key" class="r-name">numberOfAuthPwd</label>
         <input type="number" class="input-gen" placeholder="numberOfAuthPwd" id="numberOfAuthPwd">
       </div>
-      <div *ngIf="data[this.selectedModal].objectClass === 'Contextual Rules' || data[this.selectedModal].objectClass === 'Role type x'" class="rule-row__gen">
+      <div
+        *ngIf="data[this.selectedModal].objectClass === 'Contextual Rules' || data[this.selectedModal].objectClass === 'Role type x'"
+        class="rule-row__gen">
         <label for="key" class="r-name">numberOfAuthPush</label>
         <input type="number" class="input-gen" placeholder="numberOfAuthPush" id="numberOfAuthPush">
       </div>
