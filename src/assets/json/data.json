@@ -1,0 +1,117 @@
+{
+    "data": [
+        {
+            "id": "008ad949-d84c-402e-ae73-562fb512c873",
+            "key": "Test",
+            "objectClass": "Data Model",
+            "selected": ["b0360476-7024-46fb-a7e9-586d5bd070bb"],
+            "x": 294,
+            "y": 143,
+            "attributes": [{
+                    "name": "name",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"],
+                    "value": "test"
+                },
+                {
+                    "name": "family_name",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"],
+                    "value": "test"
+                },
+                {
+                    "name": "email",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"],
+                    "value": "test@gmail.com"
+                },
+                {
+                    "name": "email_verified",
+                    "type": "boolean",
+                    "operations": ["equals", "notEquals"],
+                    "values": [true, false],
+                    "value": true
+                },
+                {
+                    "name": "phone_number",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"]
+                },
+                {
+                    "name": "phone_number verified",
+                    "type": "boolean",
+                    "operations": ["equals", "notEquals"],
+                    "values": [true, false]
+                },
+                {
+                    "name":"national_identifier verified",
+                    "type": "string",
+                    "operations": ["equals", "notEquals"],
+                    "values": ["Weak", "Fair", "Strong", "Superior"],
+                    "value": "Strong"
+                }
+            ]
+        },
+        {
+            "id": "e62a3e46-9be8-4324-9f0e-2b054d293cb9",
+            "key": "test3",
+            "objectClass": "Contextual Rules",
+            "selected": [],
+            "x": 294,
+            "y": 275,
+            "attributes": [{
+                    "name": "numberOfAuthPwd",
+                    "type": "integer",
+                    "operations": ["equals", "notEquals"]
+                },
+                {
+                    "name": "numberOfAuthPush",
+                    "type": "integer",
+                    "operations": ["equals", "notEquals"]
+    
+                }
+            ]
+        },
+        {
+            "id": "378dd33e-4879-4532-8843-32376e11daff",
+            "key": "test 2",
+            "objectClass": "Role type x",
+            "selected": [],
+            "x": 572,
+            "y": 175,
+            "attributes": [{
+                    "name": "push",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"]
+    
+                },
+                {
+                    "name": "oath",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"]
+    
+                },
+                {
+                    "name": "otp sms",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"]
+    
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "operations": ["equals", "notEquals", "contains", "startsWith", "endsWith"]
+    
+                }
+            ]
+        },
+        {
+            "id": "b0360476-7024-46fb-a7e9-586d5bd070bb",
+            "key": "",
+            "objectClass": "AND",
+            "selected": ["378dd33e-4879-4532-8843-32376e11daff"],
+            "x": 383,
+            "y": 216
+        }
+    ]
+}

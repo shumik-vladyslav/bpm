@@ -36,7 +36,34 @@
         <label for="key" class="r-name">Key</label>
         <input [(ngModel)]="newItem.key" type="text" class="input-gen" placeholder="key" id="key">
       </div>
-      <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
+      <div *ngFor="let item of newItem.attributes">
+        <div *ngIf="item.type === 'string' && !item.values" class="rule-row__gen">
+          <label for="key" class="r-name">{{item.name}}</label>
+          <input [(ngModel)]="item.value" type="text" class="input-gen" [placeholder]="item.name" [id]="item.name">
+        </div>
+        <div *ngIf="item.type === 'integer' && !item.values" class="rule-row__gen">
+          <label for="key" class="r-name">{{item.name}}</label>
+          <input [(ngModel)]="item.value" type="number" class="input-gen" [placeholder]="item.name" [id]="item.name">
+        </div>
+        <div *ngIf="item.type === 'boolean'" class="rule-row__gen">
+          <label for="name" class="r-name">{{item.name}}</label>
+          <div class="form-checkbox__wrap">
+            <input type="checkbox" [(ngModel)]="item.value" class="form-checkbox__subscribe" [name]="item.name" [id]="item.name"
+              [placeholder]="item.name">
+            <label for="phone_number_verified" class="form__link"></label>
+          </div> 
+        </div>
+        <div *ngIf="item.type === 'string' && item.values" class="rule-row__gen">
+          <label for="type" class="r-name">{{item.name}}</label>
+          <select [(ngModel)]="item.value" type="text" class="input-gen sel" [name]="item.name" [id]="item.name"
+         >
+            <option *ngFor="let o of item.values" [value]="o">{{o}}</option>
+          </select>
+        </div>
+      </div>
+
+      
+      <!-- <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
         <label for="name" class="r-name">Name</label>
         <input type="text" class="input-gen" placeholder="Name" id="name">
       </div>
@@ -55,7 +82,6 @@
           placeholder="Email Varified">
           <label for="email_verified" class="form__link"></label>
         </div>
-        <!-- <input type="checkbox" class="input-gen" placeholder="Email Varified" id="email_verified"> -->
       </div>
       <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
         <label for="name" class="r-name">Phone Number</label>
@@ -68,7 +94,6 @@
           <input type="checkbox" class="form-checkbox__subscribe" name="name" id="phone_number_verified"
             placeholder="Phone Number Verified">
           <label for="phone_number_verified" class="form__link"></label>
-          <!-- <input type="checkbox" class="input-gen" placeholder="Phone Number Verified" id="phone_number_verified"> -->
         </div>
       </div>
       <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">
@@ -107,7 +132,7 @@
         class="rule-row__gen">
         <label for="key" class="r-name">numberOfAuthPush</label>
         <input type="number" class="input-gen" placeholder="numberOfAuthPush" id="numberOfAuthPush">
-      </div>
+      </div> -->
     </div>
     <button class="save-btn" (click)="saveForm()">Save</button>
   </div>

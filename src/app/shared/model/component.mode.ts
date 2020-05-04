@@ -3,6 +3,6 @@ export class ComponentClass {
     y: number;
     objectClass: string;
     id: string;
-    key: string;
+    key: string = "";
     selected: Array<string>;
 }

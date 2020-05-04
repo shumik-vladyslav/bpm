@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ComponentClass } from '../shared/model/component.mode';
 import { DialogCreateModelComponent } from '../shared/dialog-create-model/dialog-create-model.component';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
 declare var d3;
 
 @Component({
@@ -60,9 +61,16 @@ export class MainComponent implements OnInit, AfterViewInit {
   selectedModalObj;
   newItem;
 
-  constructor( public dialog: MatDialog,) { }
+  constructor( public dialog: MatDialog, private http: HttpClient) {
+    this.http.get("./assets/json/data.json").subscribe((res: any) => {
+      console.log(res);
+      this.data = res.data;
+      this.drow();
+    })
+   }
 
   ngOnInit(): void {
+  
   }
 
   ngAfterViewInit() {
@@ -206,7 +214,7 @@ export class MainComponent implements OnInit, AfterViewInit {
 
       var d = {
         source: {
-          x: this.data[this.startDrowLine].x + 20,
+          x: this.data[this.startDrowLine].x + 110,
           y: this.data[this.startDrowLine].y
         },
         target: {
@@ -346,8 +354,7 @@ export class MainComponent implements OnInit, AfterViewInit {
                 this.shepClick(s[0].id);
             })
             .on("dblclick", (d, i, s) => {
-              this.newItem = new ComponentClass();
-              this.newItem.key = "";
+              this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
               this.selectedModal = s[0].id;
               let name = this.data[this.selectedModal].objectClass;
               this.showSide = true;
@@ -512,6 +519,22 @@ export class MainComponent implements OnInit, AfterViewInit {
                 .on("click", (d, i, s) => {
                   d3.event.stopPropagation();
                   let id = s[0].id.split("-")[0];
+                 
+                  const dialogRef = this.dialog.open(DialogCreateModelComponent, {
+                    width: '450px',
+                    data: {
+                      label: 'You delete the object! Are you sure?',
+                      deleteMode: true
+                    }
+                  });
+                  dialogRef.afterClosed().subscribe(model => {
+                    if (model) {
+                     console.log(model,id);
+                     this.data.splice(+id, 1);
+                     this.removeAll();
+                     this.drow();
+                    }
+                  });
     
                 });
 
@@ -619,13 +642,13 @@ export class MainComponent implements OnInit, AfterViewInit {
               x2 += 25;
             }
           } else {
-            if (+y < +y2) {
-              y += 25;
-              y2 -= 25;
-            } else {
-              y -= 25;
-              y2 += 25;
-            }
+            // if (+y < +y2) {
+            //   y += 25;
+            //   y2 -= 25;
+            // } else {
+            //   y -= 25;
+            //   y2 += 25;
+            // }
           }
 
           var d = {
@@ -835,12 +858,36 @@ export class MainComponent implements OnInit, AfterViewInit {
   shepClick(s) {
     this.selected = s;
     let id = this.selected;
+    console.log(this.data[this.selected].objectClass, id);
+
     if (!this.startDrowLine) {
       this.activeArrow = id;
       this.startDrowLine = id;
     } else {
+      if((this.data[this.activeArrow].objectClass === "OR" || 
+      this.data[this.activeArrow].objectClass === "AND") && 
+      (this.data[this.selected].objectClass === "OR" || 
+      this.data[this.selected].objectClass === "AND")) {
+        this.activeArrow = null;
+        this.startDrowLine = null;
+        this.removeAll();
+        this.drowLines();
+        this.drow();
+        return;
+      }
+
+      if((this.data[this.activeArrow].objectClass !== "OR" &&
+      this.data[this.activeArrow].objectClass !== "AND") && 
+      (this.data[this.selected].objectClass !== "OR" && 
+      this.data[this.selected].objectClass !== "AND")) {
+        this.activeArrow = null;
+        this.startDrowLine = null;
+        this.removeAll();
+        this.drowLines();
+        this.drow();
+        return;
+      }
       let count = 0;
-      console.log(this.data, id);
       
       this.data[id].selected.forEach((element, index) => {
         if (this.data[this.activeArrow].id === element) {

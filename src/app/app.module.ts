@@ -11,6 +11,8 @@ import { DialogCreateModelComponent } from './shared/dialog-create-model/dialog-
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
+import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,11 +23,13 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     AppRoutingModule,
     MatDialogModule,
     MatButtonModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogCreateModelComponent]
 })
 export class AppModule { }
