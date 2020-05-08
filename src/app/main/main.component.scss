@@ -115,9 +115,11 @@
   margin: 0;
 }
 .r-name {
-  font-family: "Roboto", sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #8e8d8d;
-  font-size: 11px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
   margin: 0;
   cursor: pointer;
   max-width: 85px;
@@ -133,20 +135,19 @@
   min-height: 22px;
 }
 .input-gen {
-  font-family: "Roboto", sans-serif;
+  font-family: "Open Sans", sans-serif;
   color: #000;
   height: 30px;
   padding: 0 8px;
   box-sizing: border-box;
   max-width: 170px;
   width: 100%;
+  border-radius: 5px;
   background-color: #f5f6f5;
   border: 2px solid #daecf8;
+  margin-bottom: 2px;
 }
 .input-gen.sel {
-  border-radius: 5px;
-  height: 25px;
-  margin-bottom: 2px;
   padding: 0 5px;
   cursor: pointer;
 }
@@ -333,9 +334,18 @@ table {
   }
 }
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1600px) {
   .palette-entries .bpm-item .square {
-    font-size: 14px;
+    font-size: 15px;
   }
 }
-
+@media screen and (max-width: 1400px) {
+  .palette-entries .bpm-item {
+    width: 90%;
+  }
+}
+@media screen and (max-width: 1300px) {
+  .palette-entries .bpm-item .square {
+    font-size: 13px;
+  }
+}
