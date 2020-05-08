@@ -9,3 +9,22 @@ html, body {
 body {
     width: 99.9%;
 }
+
+.svg {
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+  }
+  .svg > circle {
+    stroke: black;
+    fill: white;
+  }
+  .svg > path {
+    stroke: black;
+  }
+  .svg:hover > circle {
+    fill: red;
+  }
+  .svg:hover > path {
+    stroke: white;
+  }

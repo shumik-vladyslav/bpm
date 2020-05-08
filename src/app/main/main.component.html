@@ -36,7 +36,47 @@
         <label for="key" class="r-name">Key</label>
         <input [(ngModel)]="newItem.key" type="text" class="input-gen" placeholder="key" id="key">
       </div>
-      <div *ngFor="let item of newItem.attributes">
+      <div class="rule-row__gen">
+        <label for="type" class="r-name">Attribute</label>
+        <select type="text" class="input-gen sel" [(ngModel)]="newItem.attribute" (ngModelChange)="changeAttr($event)">
+          <option *ngFor="let item of selectedData['name' + newItem.objectClass]">{{item}}</option>
+        </select>
+      </div>
+      <div class="rule-row__gen">
+        <label for="key" class="r-name">Name</label>
+        <input [(ngModel)]="newItem.name" type="text" class="input-gen" placeholder="Name" id="name">
+      </div>
+      <div class="rule-row__gen">
+        <label for="key" class="r-name">Description</label>
+        <input [(ngModel)]="newItem.description" type="text" class="input-gen" placeholder="Description" id="description">
+      </div>
+      <!-- <div class="rule-row__gen">
+        <label for="type" class="r-name">Type</label>
+        <select type="text" class="input-gen sel" [(ngModel)]="newItem.type">
+          <option *ngFor="let item of selectedData['type' + newItem.objectClass + newItem.attribute]">{{item}}</option>
+        </select>
+      </div> -->
+      <div class="rule-row__gen">
+        <label for="type" class="r-name">Type</label>
+        <input [(ngModel)]="newItem.type" type="text" class="input-gen" placeholder="type" id="type">
+      </div>
+      <div class="rule-row__gen">
+        <label for="type" class="r-name">Operation</label>
+        <select type="text" class="input-gen sel" [(ngModel)]="newItem.operations">
+          <option *ngFor="let item of selectedData['operations' + newItem.objectClass + newItem.attribute]">{{item}}</option>
+        </select>
+      </div>
+      <div *ngIf="selectedData['values' + newItem.objectClass + newItem.attribute]" class="rule-row__gen">
+        <label for="type" class="r-name">Value</label>
+        <select type="text" class="input-gen sel" [(ngModel)]="newItem.value">
+          <option *ngFor="let item of selectedData['values' + newItem.objectClass + newItem.attribute]">{{item}}</option>
+        </select>
+      </div>
+      <div *ngIf="!selectedData['values' + newItem.objectClass + newItem.attribute]" class="rule-row__gen">
+        <label for="type" class="r-name">Value</label>
+        <input [(ngModel)]="newItem.valueText" type="text" class="input-gen" placeholder="value" id="valuetext">
+      </div>
+      <!-- <div *ngFor="let item of newItem.attributes">
         <div *ngIf="item.type === 'string' && !item.values" class="rule-row__gen">
           <label for="key" class="r-name">{{item.name}}</label>
           <input [(ngModel)]="item.value" type="text" class="input-gen" [placeholder]="item.name" [id]="item.name">
@@ -60,7 +100,7 @@
             <option *ngFor="let o of item.values" [value]="o">{{o}}</option>
           </select>
         </div>
-      </div>
+      </div> -->
 
       
       <!-- <div *ngIf="data[this.selectedModal].objectClass === 'Data Model'" class="rule-row__gen">

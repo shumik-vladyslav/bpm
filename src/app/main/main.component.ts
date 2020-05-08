@@ -3,6 +3,7 @@ import { ComponentClass } from '../shared/model/component.mode';
 import { DialogCreateModelComponent } from '../shared/dialog-create-model/dialog-create-model.component';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { trimTrailingNulls } from '@angular/compiler/src/render3/view/util';
 declare var d3;
 
 @Component({
@@ -12,24 +13,29 @@ declare var d3;
 })
 export class MainComponent implements OnInit, AfterViewInit {
   types = [
-    "Data Model",
-    "Audit Rules",
-    "Contextual Rules",
-    "Role type x",
-    // "Board"
+    // "Data Model",
+    // "Audit Rules",
+    // "Contextual Rules",
+    // "Role type x",
   ];
 
   colors = {
-    "Data Model": "#fec003",
-    "Audit Rules": "#ff0300",
-    "Contextual Rules": "#93d052",
-    "Role type x": "#d9edf8",
+    // "Data Model": "#fec003",
+    // "Audit Rules": "#ff0300",
+    // "Contextual Rules": "#93d052",
+    // "Role type x": "#d9edf8",
   }
+  colorsArr = [
+    "#fec003",
+    "#ff0300",
+    "#93d052",
+    "#d9edf8",
+  ]
   text = {
-    "Data Model": "#000",
-    "Audit Rules": "#fff",
-    "Contextual Rules": "#fff",
-    "Role type x": "#000",
+    // "Data Model": "#000",
+    // "Audit Rules": "#fff",
+    // "Contextual Rules": "#fff",
+    // "Role type x": "#000",
   }
 
   picture;
@@ -62,19 +68,38 @@ export class MainComponent implements OnInit, AfterViewInit {
   newItem;
 
   constructor( public dialog: MatDialog, private http: HttpClient) {
-    this.http.get("./assets/json/data.json").subscribe((res: any) => {
-      console.log(res);
-      this.data = res.data;
-      this.drow();
-    })
+
    }
 
   ngOnInit(): void {
   
   }
-
+  settings = {}
+  selectedData = {}
+  optionsData;
   ngAfterViewInit() {
-    this.init();
+    this.http.get("./assets/json/data.json").subscribe((res: any) => {
+      this.data = res.data;
+      for(let i = 0; i < res.options.length; i++) {
+        let item = res.options[i];
+        this.types.push(item.name);
+        this.optionsData = res.options;
+        this.colors[item.name] = this.colorsArr[i];
+        this.text[item.name] = "#fff";
+        this.settings[item.name] = item;
+        this.selectedData["name" + item.name] = this.getAttribute(item, 'name');
+        // this.selectedData["type" + item.name] = this.getAttribute(item, 'type');
+        // this.selectedData["operations" + item.name] = this.getAttribute(item, 'operations', true);
+        // this.selectedData["values" + item.name] = this.getAttribute(item, 'values', true);
+      }
+      setTimeout(() => {
+        this.drow();
+        this.init();
+        console.log(this.selectedData);
+        
+      }, 1000);
+
+    })
   }
   slider;
   init() {
@@ -292,156 +317,13 @@ export class MainComponent implements OnInit, AfterViewInit {
       let h = (65 + (count > 3 ? ((count - 3) * 27 + ( countS * 5) + (count * 5)) : 0+ ( countS * 5)));
       let selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "";
       let g = this.conteiner.append("g").attr("class", "g");
-      switch (element.objectClass) {
-        case "Data Model":
-        case "Audit Rules":
-        case "Contextual Rules":
-        case "Role type x":
-        // case "Board":
-          dx = element.x - 10;
-          dy = element.y - 8;
-          color = this.colors[element.objectClass];
-          count = 0;
-          countS = 0;
-          h = (65 + (count > 3 ? ((count - 3) * 27 + ( countS * 5) + (count * 5)) : 0+ ( countS * 5)));
-          selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "";
-          g = this.conteiner.append("g").attr("class", "g");
-          g.append("rect")
-            .attr("class", "nodes")
-            .attr("id", index)
-            .attr("style", selected)
-            .attr("fill", color)
-            .attr("x", element.x - 5)
-            .attr("y", element.y - 10)
-            .attr("width", 140)
-            .attr("height", 35)
-            .attr("rx", 10)
-            .attr("ry", 10)
-            .call(
-              d3
-                .drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended)
-            )
-            .on("mouseover", (q, w, e) => {
-              d3.event.stopPropagation();
-              if (this.activeArrow) {
-                document.documentElement.style.cursor = "default";
-                d3.select(document.getElementById(e[0].id + "main")).style(
-                  "fill",
-                  "#84bd96"
-                );
-              }
-            })
-            .on("mouseout", (q, w, e) => {
-              d3.event.stopPropagation();
-              d3.select(document.getElementById(e[0].id + "main")).style(
-                "fill",
-                "#2196f3"
-              );
-              if (this.activeArrow) {
-                document.documentElement.style.cursor = "not-allowed";
-              }
-            })
-            .on("click", (d, i, s) => {
-              d3.event.stopPropagation();
-              this.selectedModal = s[0].id;
-              this.selected = s[0].id;
-              this.removeAll();
-              this.drow();
-              if (this.activeArrow)
-                this.shepClick(s[0].id);
-            })
-            .on("dblclick", (d, i, s) => {
-              this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
-              this.selectedModal = s[0].id;
-              let name = this.data[this.selectedModal].objectClass;
-              this.showSide = true;
-              this.selected = s[0].id;
-              this.removeAll();
-              this.drow();
-              this.activeArrow = null;
-              this.startDrowLine = null;
-            });
-          g.append("svg")
-            .attr("x", element.x + 5)
-            .attr("y", element.y - 5)
-            .attr("width", 24)
-            .attr("height", 24)
-            .attr("viewBox", "0 0 24 24")
-            .append("path")
-            .attr("d", "M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z")
-            // .text((element.name || element.id));
-          // g.append("text")
-          //   .attr("x", element.x - 5)
-          //   .attr("y", element.y - 13)
-          //   .text((element.name || element.id));
-            if(element.key){
-            g.append("text")
-              .attr("id", index + "-")
-              .attr("x", element.x + 40)
-              .attr("y", element.y + 13)
-              .text(element.key)
-              .attr("cursor", "pointer")
-            }
-          g.append("text")
-            .attr("id", index + "-remove")
-            .attr("x", element.x + 140)
-            .attr("y", element.y - 13)
-            .text("X")
-            .attr("cursor", "pointer")
-            .on("click", (d, i, s) => {
-              d3.event.stopPropagation();
-              let id = s[0].id.split("-")[0];
-             
-              const dialogRef = this.dialog.open(DialogCreateModelComponent, {
-                width: '450px',
-                data: {
-                  label: 'You delete the object! Are you sure?',
-                  deleteMode: true
-                }
-              });
-              dialogRef.afterClosed().subscribe(model => {
-                if (model) {
-                 console.log(model,id);
-                 this.data.splice(+id, 1);
-                 this.removeAll();
-                 this.drow();
-                }
-              });
-            });
+ 
+       
 
-          // g.append("text")
-          //   .attr("id", index + "-arrow")
-          //   .attr("x", element.x + 135)
-          //   .attr("y", element.y + 5)
-          //   .text("=>")
-          //   .attr("cursor", "pointer")
-          //   .on("click", (d, i, s) => {
-          //     d3.event.stopPropagation();
-          //     let id = s[0].id.split("-")[0];
-          //     this.shepClick(id);
-          //   });
+          if(element.objectClass === "AND" ||
+          element.objectClass === "OR"){
+  
 
-          // g.append("text")
-          //   .attr("id", index + "-drag")
-          //   .attr("x", element.x)
-          //   .attr("y", element.y + 5)
-          //   .text("|||")
-          //   .attr("cursor", "pointer")
-          //   .call(
-          //     d3
-          //       .drag()
-          //       .on("start", dragstarted)
-          //       .on("drag", dragged)
-          //       .on("end", dragended)
-          //   );
-
-          break;
-
-          case "AND":
-          case "OR":
             dx = element.x - 10;
             dy = element.y - 8;
             color = this.colors[element.objectClass];
@@ -510,12 +392,35 @@ export class MainComponent implements OnInit, AfterViewInit {
                   this.startDrowLine = null;
                 });
     
-              g.append("text")
-                .attr("id", index + "-remove")
-                .attr("x", element.x + 140)
-                .attr("y", element.y - 13)
-                .text("X")
-                .attr("cursor", "pointer")
+              let  cg = g.append("g");
+              cg.append("circle")
+                .attr("class", "svg")
+                .attr("cx", element.x + 140)
+                .attr("cy", element.y - 13)
+                .attr("r", 11)
+                .attr("stroke", "black")
+                .attr("stroke-width", 2)
+                .attr("fill", "white");
+                
+                cg.append("path")
+                .attr("transform", `translate(${element.x + 128},${element.y -25})`)
+                .attr("d", "M6.25,6.25,17.75,17.75")
+                .attr("stroke", "black")
+                .attr("stroke-width", 3)
+                .attr("fill", "none");
+                cg.append("path")
+                .attr("transform", `translate(${element.x + 128},${element.y -25})`)
+                .attr("d", "M6.25,17.75,17.75,6.25")
+                .attr("stroke", "black")
+                .attr("stroke-width", 3)
+                .attr("fill", "none")
+              // g.append("text")
+              //   .attr("id", index + "-remove")
+              //   .attr("x", element.x + 140)
+              //   .attr("y", element.y - 13)
+              //   .attr("class", "boxclose")
+              //   .text("x")
+              cg.attr("cursor", "pointer")
                 .on("click", (d, i, s) => {
                   d3.event.stopPropagation();
                   let id = s[0].id.split("-")[0];
@@ -540,13 +445,288 @@ export class MainComponent implements OnInit, AfterViewInit {
 
           g.append("text")
             .attr("x", element.x+105 + (element.objectClass === "AND" ? -8 : 0))
+            .attr("id", index + "-text")
             .attr("y", element.y + 20)
             .attr("fill", "white")
-            .text(element.objectClass);
+            .text(element.objectClass) .call(
+              d3
+                .drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended)
+            )
+            .on("mouseover", (q, w, e) => {
+              d3.event.stopPropagation();
+              if (this.activeArrow) {
+                document.documentElement.style.cursor = "default";
+                d3.select(document.getElementById(e[0].id + "main")).style(
+                  "fill",
+                  "#84bd96"
+                );
+              }
+            })
+            .on("mouseout", (q, w, e) => {
+              d3.event.stopPropagation();
+              d3.select(document.getElementById(e[0].id + "main")).style(
+                "fill",
+                "#2196f3"
+              );
+              if (this.activeArrow) {
+                document.documentElement.style.cursor = "not-allowed";
+              }
+            })
+            .on("click", (d, i, s) => {
+              d3.event.stopPropagation();
+              let id = s[0].id.split("-")
+              this.selectedModal = id[0];
+              this.selected = id[0];
+              this.removeAll();
+              this.drow();
+              
+              if (this.activeArrow)
+                this.shepClick(id[0]);
+            })
+            .on("dblclick", (d, i, s) => {
+              this.selectedModal = s[0].id;
+              let name = this.data[this.selectedModal].objectClass + (this.data[this.selectedModal].parameters.length + 1);
+              this.showSide = true;
+              this.selected = s[0].id;
+              this.removeAll();
+              this.drow();
+              this.activeArrow = null;
+              this.startDrowLine = null;
+            });
     
-              break;
-        default:
-          break;
+      } else {
+
+ dx = element.x - 10;
+ dy = element.y - 8;
+ color = this.colors[element.objectClass];
+ count = 0;
+ countS = 0;
+ h = (65 + (count > 3 ? ((count - 3) * 27 + ( countS * 5) + (count * 5)) : 0+ ( countS * 5)));
+ selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "";
+ g = this.conteiner.append("g").attr("class", "g");
+ g.append("rect")
+   .attr("class", "nodes")
+   .attr("id", index)
+   .attr("style", selected)
+   .attr("fill", color)
+   .attr("x", element.x - 5)
+   .attr("y", element.y - 10)
+   .attr("width", 140)
+   .attr("height", 35)
+   .attr("rx", 10)
+   .attr("ry", 10)
+   .call(
+     d3
+       .drag()
+       .on("start", dragstarted)
+       .on("drag", dragged)
+       .on("end", dragended)
+   )
+   .on("mouseover", (q, w, e) => {
+     d3.event.stopPropagation();
+     if (this.activeArrow) {
+       document.documentElement.style.cursor = "default";
+       d3.select(document.getElementById(e[0].id + "main")).style(
+         "fill",
+         "#84bd96"
+       );
+     }
+   })
+   .on("mouseout", (q, w, e) => {
+     d3.event.stopPropagation();
+     d3.select(document.getElementById(e[0].id + "main")).style(
+       "fill",
+       "#2196f3"
+     );
+     if (this.activeArrow) {
+       document.documentElement.style.cursor = "not-allowed";
+     }
+   })
+   .on("click", (d, i, s) => {
+     d3.event.stopPropagation();
+     this.selectedModal = s[0].id;
+     this.selected = s[0].id;
+     this.removeAll();
+     this.drow();
+     if (this.activeArrow)
+       this.shepClick(s[0].id);
+   })
+   .on("dblclick", (d, i, s) => {
+     this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
+     this.selectedModal = s[0].id;
+     
+     this.newItem.attribute = this.selectedData["name" + this.data[this.selectedModal].objectClass][0];
+     this.newItem.type = 
+     this.getElementsByAttributs(this.newItem.attribute, 'type', this.data[this.selectedModal].objectClass);
+     this.selectedData['operations' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
+     this.getElementsByAttributs(this.newItem.attribute, 'operations', this.data[this.selectedModal].objectClass);
+     this.selectedData['values' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
+     this.getElementsByAttributs(this.newItem.attribute, 'values', this.data[this.selectedModal].objectClass);
+     console.log(this.selectedData);
+     
+     let name = this.data[this.selectedModal].objectClass;
+     this.showSide = true;
+     this.selected = s[0].id;
+     this.removeAll();
+     this.drow();
+     this.activeArrow = null;
+     this.startDrowLine = null;
+   });
+ g.append("svg")
+   .attr("x", element.x + 5)
+   .attr("y", element.y - 5)
+   .attr("width", 24)
+   .attr("height", 24)
+   .attr("viewBox", "0 0 24 24")
+   .append("path")
+   .attr("d", "M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z")
+   // .text((element.name || element.id));
+ // g.append("text")
+ //   .attr("x", element.x - 5)
+ //   .attr("y", element.y - 13)
+ //   .text((element.name || element.id));
+   if(element.key){
+   g.append("text")
+     .attr("id", index + "-text")
+     .attr("x", element.x + 40)
+     .attr("y", element.y + 13)
+     .text(element.key)
+     .attr("cursor", "pointer")
+     .call(
+      d3
+        .drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended)
+    )
+    .on("mouseover", (q, w, e) => {
+      d3.event.stopPropagation();
+      if (this.activeArrow) {
+        document.documentElement.style.cursor = "default";
+        d3.select(document.getElementById(e[0].id + "main")).style(
+          "fill",
+          "#84bd96"
+        );
+      }
+    })
+    .on("mouseout", (q, w, e) => {
+      d3.event.stopPropagation();
+      d3.select(document.getElementById(e[0].id + "main")).style(
+        "fill",
+        "#2196f3"
+      );
+      if (this.activeArrow) {
+        document.documentElement.style.cursor = "not-allowed";
+      }
+    })
+    .on("click", (d, i, s) => {
+      d3.event.stopPropagation();
+      let id = s[0].id.split("-")
+      console.log(id[0]);
+
+      this.selectedModal = id[0];
+      this.selected = id[0];
+      this.removeAll();
+      this.drow();
+      if (this.activeArrow)
+        this.shepClick(id[0]);
+    })
+    .on("dblclick", (d, i, s) => {
+      this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
+      this.selectedModal = s[0].id;
+      let name = this.data[this.selectedModal].objectClass;
+      this.showSide = true;
+      this.selected = s[0].id;
+      this.removeAll();
+      this.drow();
+      this.activeArrow = null;
+      this.startDrowLine = null;
+    });
+   }
+
+   let  cg = g.append("g");
+   cg.append("circle")
+     .attr("class", "svg")
+     .attr("cx", element.x + 140)
+     .attr("cy", element.y - 13)
+     .attr("r", 11)
+     .attr("stroke", "black")
+     .attr("stroke-width", 2)
+     .attr("fill", "white");
+     
+     cg.append("path")
+     .attr("transform", `translate(${element.x + 128},${element.y -25})`)
+     .attr("d", "M6.25,6.25,17.75,17.75")
+     .attr("stroke", "black")
+     .attr("stroke-width", 3)
+     .attr("fill", "none");
+     cg.append("path")
+     .attr("transform", `translate(${element.x + 128},${element.y -25})`)
+     .attr("d", "M6.25,17.75,17.75,6.25")
+     .attr("stroke", "black")
+     .attr("stroke-width", 3)
+     .attr("fill", "none")
+   // g.append("text")
+   //   .attr("id", index + "-remove")
+   //   .attr("x", element.x + 140)
+   //   .attr("y", element.y - 13)
+   //   .attr("class", "boxclose")
+   //   .text("x")
+//  g.append("text")
+//    .attr("id", index + "-remove")
+//    .attr("x", element.x + 140)
+//    .attr("y", element.y - 13)
+//    .text("X")
+//    .attr("cursor", "pointer")
+cg.on("click", (d, i, s) => {
+     d3.event.stopPropagation();
+     let id = s[0].id.split("-")[0];
+    
+     const dialogRef = this.dialog.open(DialogCreateModelComponent, {
+       width: '450px',
+       data: {
+         label: 'You delete the object! Are you sure?',
+         deleteMode: true
+       }
+     });
+     dialogRef.afterClosed().subscribe(model => {
+       if (model) {
+        console.log(model,id);
+        this.data.splice(+id, 1);
+        this.removeAll();
+        this.drow();
+       }
+     });
+   });
+
+ // g.append("text")
+ //   .attr("id", index + "-arrow")
+ //   .attr("x", element.x + 135)
+ //   .attr("y", element.y + 5)
+ //   .text("=>")
+ //   .attr("cursor", "pointer")
+ //   .on("click", (d, i, s) => {
+ //     d3.event.stopPropagation();
+ //     let id = s[0].id.split("-")[0];
+ //     this.shepClick(id);
+ //   });
+
+ // g.append("text")
+ //   .attr("id", index + "-drag")
+ //   .attr("x", element.x)
+ //   .attr("y", element.y + 5)
+ //   .text("|||")
+ //   .attr("cursor", "pointer")
+ //   .call(
+ //     d3
+ //       .drag()
+ //       .on("start", dragstarted)
+ //       .on("drag", dragged)
+ //       .on("end", dragended)
+ //   );
       }
       if (this.marker)
         this.marker
@@ -742,11 +922,14 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   menuInit() {
+    
     this.types.forEach(type => {
+
       if (document.getElementById(type)) {
         document.getElementById(type).addEventListener(
           "dragstart",
           ev => {
+            
             ev.dataTransfer.setData('text', 'foo');
             this.dragType = type;
             if (this.isStart && type === "Start") {
@@ -864,7 +1047,8 @@ export class MainComponent implements OnInit, AfterViewInit {
       this.activeArrow = id;
       this.startDrowLine = id;
     } else {
-      if((this.data[this.activeArrow].objectClass === "OR" || 
+      if(this.data[this.activeArrow].selected.length > 0  && 
+        !(this.data[this.activeArrow].objectClass === "OR" || 
       this.data[this.activeArrow].objectClass === "AND") && 
       (this.data[this.selected].objectClass === "OR" || 
       this.data[this.selected].objectClass === "AND")) {
@@ -875,6 +1059,17 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.drow();
         return;
       }
+      // if((this.data[this.activeArrow].objectClass === "OR" || 
+      // this.data[this.activeArrow].objectClass === "AND") && 
+      // (this.data[this.selected].objectClass === "OR" || 
+      // this.data[this.selected].objectClass === "AND")) {
+      //   this.activeArrow = null;
+      //   this.startDrowLine = null;
+      //   this.removeAll();
+      //   this.drowLines();
+      //   this.drow();
+      //   return;
+      // }
 
       if((this.data[this.activeArrow].objectClass !== "OR" &&
       this.data[this.activeArrow].objectClass !== "AND") && 
@@ -947,5 +1142,51 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.data[this.selectedModal].key = this.newItem.key;
     this.removeAll();
     this.drow();
+  }
+
+  getAttribute(newItem, type, hasArr?) {
+    
+    let items = this.settings[newItem.name].attributes;
+    let arr = [];
+
+    if(hasArr) {
+      for(let item of items){
+        if(item[type])
+        arr = arr.concat(item[type]);
+      }
+    } else {
+      for(let item of items){
+        arr.push(item[type]);
+      }
+    }
+   
+    return [...new Set(arr)];
+  }
+
+  getElementsByAttributs(attribute,type, calss) {
+    let arr;
+    for (const iterator of this.optionsData) {
+      if(iterator.name === calss) {
+        for (let index = 0; index < iterator.attributes.length; index++) {
+          const element = iterator.attributes[index];
+          if(element.name === attribute){
+            arr = element[type];
+          }
+        }
+      }
+    }
+
+    return arr;
+  }
+
+  changeAttr(name) {
+    this.newItem.attribute = name;
+    this.newItem.type = 
+    this.getElementsByAttributs(this.newItem.attribute, 'type', this.data[this.selectedModal].objectClass);
+    this.selectedData['operations' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
+    this.getElementsByAttributs(this.newItem.attribute, 'operations', this.data[this.selectedModal].objectClass);
+    this.selectedData['values' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
+    this.getElementsByAttributs(this.newItem.attribute, 'values', this.data[this.selectedModal].objectClass);
+    
   }
 }
