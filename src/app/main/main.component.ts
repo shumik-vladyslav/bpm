@@ -12,6 +12,8 @@ declare var d3;
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit, AfterViewInit {
+  public listOpen:boolean = false;
+  public listOpen1:boolean = false;
   types = [
     // "Data Model",
     // "Audit Rules",

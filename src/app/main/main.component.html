@@ -40,18 +40,46 @@
           <img class="img-but" src="/assets/business.svg" alt="card">
         </p>
         <p class="item-title">Data Identity</p>
-        <p class="d-arrow">
+        <p (click)="listOpen1 = !listOpen1" class="d-arrow">
           <img src="/assets/down.svg" alt="down">
         </p>
+      </div>
+      <div [class.active]="listOpen1" class="item-cont__list">
+        <div class="list_item">
+          <p class="item_title">Last Name</p>
+        </div>
+        <div class="list_item">
+          <p class="item_title">First Name</p>
+        </div>
+        <div class="list_item">
+          <p class="item_title">National Identiier</p>
+        </div>
+        <div class="list_item">
+          <p class="item_title">Birthdate</p>
+        </div>
       </div>
       <div class="item_wrap">
         <p class="icon_wrap no-m">
           <img class="img-but" src="/assets/social.svg" alt="soc">
         </p>
         <p class="item-title">Contact Element</p>
-        <p class="d-arrow">
+        <p (click)="listOpen = !listOpen" class="d-arrow">
           <img src="/assets/down.svg" alt="down">
         </p>
+      </div>
+      <div [class.active]="listOpen" class="item-cont__list">
+        <div class="list_item">
+          <p class="item_title">Email</p>
+        </div>
+        <div class="list_item">
+          <p class="item_title">Phone Number</p>
+        </div>
+        <div class="list_item">
+          <p class="item_title">Address</p>
+        </div>
+        <div class="list_item">
+          <p class="item_title">Local</p>
+        </div>
       </div>
       <div class="item_wrap">
         <p class="icon_wrap no-m">
