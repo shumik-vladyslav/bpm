@@ -1,6 +1,85 @@
 <div class="bpm-wrap">
+  <div class="header-palette">
+    <div class="icons-wrap">
+      <button class="btn-gen_wrap">
+        <img class="img-but rot" src="/assets/tree.svg" alt="tree">
+      </button>
+      <button class="btn-gen_wrap">
+        <img class="img-but" src="/assets/bin.svg" alt="bin">
+      </button>
+      <button class="btn-gen_wrap">
+        <img class="img-but" src="/assets/zoomp.svg" alt="zoom">
+      </button>
+      <button class="btn-gen_wrap">
+        <img class="img-but" src="/assets/zoomm.svg" alt="zoom">
+      </button>
+    </div>
+  </div>
   <div class="palette-entries">
-    <div *ngFor="let item of types" class="bpm-item">
+    <div class="head-entries">
+      <p>Components</p>
+    </div>
+    <div class="entries-cont_wrap">
+      <div class="item_wrap">
+        <p class="icon_wrap">
+          <img class="img-but rot" src="/assets/tree.svg" alt="tree">
+        </p>
+        <p class="item-title">Logical AND relation</p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap">
+          <img class="img-but rot" src="/assets/tree.svg" alt="tree">
+        </p>
+        <p class="item-title">Logical OR relation</p>
+      </div>
+      <div class="padding">
+        <p></p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap no-m">
+          <img class="img-but" src="/assets/business.svg" alt="card">
+        </p>
+        <p class="item-title">Data Identity</p>
+        <p class="d-arrow">
+          <img src="/assets/down.svg" alt="down">
+        </p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap no-m">
+          <img class="img-but" src="/assets/social.svg" alt="soc">
+        </p>
+        <p class="item-title">Contact Element</p>
+        <p class="d-arrow">
+          <img src="/assets/down.svg" alt="down">
+        </p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap no-m">
+          <img class="img-but" src="/assets/hammer.svg" alt="hammer">
+        </p>
+        <p class="item-title">Proof Identity</p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap no-m">
+          <img class="img-but" src="/assets/finger.svg" alt="finger">
+        </p>
+        <p class="item-title">Authentication Means</p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap no-m">
+          <img class="img-but" src="/assets/graph.svg" alt="graph">
+        </p>
+        <p class="item-title">Authentication Audit</p>
+      </div>
+      <div class="item_wrap">
+        <p class="icon_wrap no-m">
+          <img class="img-but" src="/assets/social.svg" alt="soc">
+        </p>
+        <p class="item-title">Contextual Element</p>
+      </div>
+    </div>
+    
+    <!-- <div *ngFor="let item of types" class="bpm-item">
       <div [id]="item" [draggable]="true" [ngStyle]="{'color': text[item], 'background': colors[item]}" class="square"
         [title]="item" tooltipPosition="top">
         {{item}}
@@ -18,7 +97,7 @@
       <div style="cursor: pointer;" (click)="arrowSelect()">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path d="M24 11.871l-5-4.871v3h-19v4h19v3z" /></svg></div>
-    </div>
+    </div> -->
   </div>
   <div class="coco-bpm-graph" id="graph"></div>
   <!-- <div class="clickShield" *ngIf="showSide" (click)="showSide = false"></div> -->
