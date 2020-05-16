@@ -5,4 +5,6 @@ export class ComponentClass {
     id: string;
     key: string = "";
     selected: Array<string>;
+    selectedIn: Array<string> = [];
+    
 }

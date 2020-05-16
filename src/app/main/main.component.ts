@@ -68,7 +68,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   newItem;
 
   constructor( public dialog: MatDialog, private http: HttpClient) {
-
+      
    }
 
   ngOnInit(): void {
@@ -392,7 +392,9 @@ export class MainComponent implements OnInit, AfterViewInit {
                   this.startDrowLine = null;
                 });
     
-              let  cg = g.append("g");
+              let  cg = g.append("g")
+              .attr("id", index + "-del")
+              ;
               cg.append("circle")
                 .attr("class", "svg")
                 .attr("cx", element.x + 140)
@@ -424,6 +426,7 @@ export class MainComponent implements OnInit, AfterViewInit {
                 .on("click", (d, i, s) => {
                   d3.event.stopPropagation();
                   let id = s[0].id.split("-")[0];
+                  console.log(s[0].id);
                  
                   const dialogRef = this.dialog.open(DialogCreateModelComponent, {
                     width: '450px',
@@ -435,6 +438,16 @@ export class MainComponent implements OnInit, AfterViewInit {
                   dialogRef.afterClosed().subscribe(model => {
                     if (model) {
                      console.log(model,id);
+                     for (let index = 0; index < this.data.length; index++) {
+                       const element = this.data[index];
+                       let s = element.selectedIn.indexOf(this.data[id].id);
+                        element.selectedIn.splice(s,1);
+
+                       let sIn = element.selected.indexOf(this.data[id].id);
+                        element.selected.splice(sIn,1);
+                       console.log(element);
+                       
+                     }
                      this.data.splice(+id, 1);
                      this.removeAll();
                      this.drow();
@@ -647,7 +660,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     });
    }
 
-   let  cg = g.append("g");
+   let  cg = g.append("g")
+   .attr("id", index + "-del");
    cg.append("circle")
      .attr("class", "svg")
      .attr("cx", element.x + 140)
@@ -695,6 +709,19 @@ cg.on("click", (d, i, s) => {
      dialogRef.afterClosed().subscribe(model => {
        if (model) {
         console.log(model,id);
+        for (let index = 0; index < this.data.length; index++) {
+          
+          const element = this.data[index];
+          let s = element.selectedIn.indexOf(this.data[id].id);
+          if(s) {
+           element.selectedIn.splice(s,1);
+          }
+
+          let sIn = element.selected.indexOf(this.data[id].id);
+          if(sIn) {
+           element.selected.splice(sIn,1);
+          }
+        }
         this.data.splice(+id, 1);
         this.removeAll();
         this.drow();
@@ -1059,19 +1086,9 @@ cg.on("click", (d, i, s) => {
         this.drow();
         return;
       }
-      // if((this.data[this.activeArrow].objectClass === "OR" || 
-      // this.data[this.activeArrow].objectClass === "AND") && 
-      // (this.data[this.selected].objectClass === "OR" || 
-      // this.data[this.selected].objectClass === "AND")) {
-      //   this.activeArrow = null;
-      //   this.startDrowLine = null;
-      //   this.removeAll();
-      //   this.drowLines();
-      //   this.drow();
-      //   return;
-      // }
 
-      if((this.data[this.activeArrow].objectClass !== "OR" &&
+      if( 
+        (this.data[this.activeArrow].objectClass !== "OR" && 
       this.data[this.activeArrow].objectClass !== "AND") && 
       (this.data[this.selected].objectClass !== "OR" && 
       this.data[this.selected].objectClass !== "AND")) {
@@ -1082,6 +1099,17 @@ cg.on("click", (d, i, s) => {
         this.drow();
         return;
       }
+
+      if(this.data[this.selected].selectedIn.length === 1) {
+        this.activeArrow = null;
+        this.startDrowLine = null;
+        this.removeAll();
+        this.drowLines();
+        this.drow();
+        return;
+      }
+
+
       let count = 0;
       
       this.data[id].selected.forEach((element, index) => {
@@ -1105,13 +1133,20 @@ cg.on("click", (d, i, s) => {
 
       if (id !== this.activeArrow) {
         this.data[this.activeArrow].selected.push(this.data[id].id);
+        this.data[this.selected].selectedIn.push(this.data[this.activeArrow].id);
         // this.txtQueryChanged.next({
         //   value: "query",
         //   selected: this.activeArrow
         // });
       }
+    
+      console.log(this.data[this.activeArrow].selectedIn,
+        this.data[this.activeArrow].selected, 222);
+      console.log(this.data[this.selected].selectedIn, 
+        this.data[this.selected].selected, 222);
       this.activeArrow = null;
       this.startDrowLine = null;
+
     }
 
     this.removeAll();
