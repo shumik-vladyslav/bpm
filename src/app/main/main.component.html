@@ -4,13 +4,13 @@
       <button class="btn-gen_wrap">
         <img class="img-but rot" src="/assets/tree.svg" alt="tree">
       </button>
-      <button class="btn-gen_wrap">
+      <button (click)="deleteElement()" class="btn-gen_wrap">
         <img class="img-but" src="/assets/bin.svg" alt="bin">
       </button>
-      <button class="btn-gen_wrap">
+      <button class="btn-gen_wrap" (click)="zoomPlus()">
         <img class="img-but" src="/assets/zoomp.svg" alt="zoom">
       </button>
-      <button class="btn-gen_wrap">
+      <button class="btn-gen_wrap" (click)="zoomMinus()">
         <img class="img-but" src="/assets/zoomm.svg" alt="zoom">
       </button>
     </div>
@@ -20,13 +20,13 @@
       <p>Components</p>
     </div>
     <div class="entries-cont_wrap">
-      <div class="item_wrap">
+      <div id="AND" [draggable]="true" class="item_wrap">
         <p class="icon_wrap">
           <img class="img-but rot" src="/assets/tree.svg" alt="tree">
         </p>
         <p class="item-title">Logical AND relation</p>
       </div>
-      <div class="item_wrap">
+      <div id="OR" [draggable]="true" class="item_wrap">
         <p class="icon_wrap">
           <img class="img-but rot" src="/assets/tree.svg" alt="tree">
         </p>
@@ -35,76 +35,22 @@
       <div class="padding">
         <p></p>
       </div>
+     <div *ngFor="let item of optionsData">
       <div class="item_wrap">
         <p class="icon_wrap no-m">
-          <img class="img-but" src="/assets/business.svg" alt="card">
+          <img class="img-but" src="/assets/{{item.icon}}.svg" alt="card">
         </p>
-        <p class="item-title">Data Identity</p>
-        <p (click)="listOpen1 = !listOpen1" class="d-arrow">
+        <p class="item-title">{{item.name}}</p>
+        <p (click)="item.show = !item.show" class="d-arrow">
           <img src="/assets/down.svg" alt="down">
         </p>
       </div>
-      <div [class.active]="listOpen1" class="item-cont__list">
-        <div class="list_item">
-          <p class="item_title">Last Name</p>
-        </div>
-        <div class="list_item">
-          <p class="item_title">First Name</p>
-        </div>
-        <div class="list_item">
-          <p class="item_title">National Identiier</p>
-        </div>
-        <div class="list_item">
-          <p class="item_title">Birthdate</p>
+      <div [class.active]="item.show" class="item-cont__list">
+        <div *ngFor="let attribute of item.attributes" [id]="item.name+'-'+attribute.name" [draggable]="true" class="list_item">
+          <p class="item_title">{{attribute.name}}</p>
         </div>
       </div>
-      <div class="item_wrap">
-        <p class="icon_wrap no-m">
-          <img class="img-but" src="/assets/social.svg" alt="soc">
-        </p>
-        <p class="item-title">Contact Element</p>
-        <p (click)="listOpen = !listOpen" class="d-arrow">
-          <img src="/assets/down.svg" alt="down">
-        </p>
-      </div>
-      <div [class.active]="listOpen" class="item-cont__list">
-        <div class="list_item">
-          <p class="item_title">Email</p>
-        </div>
-        <div class="list_item">
-          <p class="item_title">Phone Number</p>
-        </div>
-        <div class="list_item">
-          <p class="item_title">Address</p>
-        </div>
-        <div class="list_item">
-          <p class="item_title">Local</p>
-        </div>
-      </div>
-      <div class="item_wrap">
-        <p class="icon_wrap no-m">
-          <img class="img-but" src="/assets/hammer.svg" alt="hammer">
-        </p>
-        <p class="item-title">Proof Identity</p>
-      </div>
-      <div class="item_wrap">
-        <p class="icon_wrap no-m">
-          <img class="img-but" src="/assets/finger.svg" alt="finger">
-        </p>
-        <p class="item-title">Authentication Means</p>
-      </div>
-      <div class="item_wrap">
-        <p class="icon_wrap no-m">
-          <img class="img-but" src="/assets/graph.svg" alt="graph">
-        </p>
-        <p class="item-title">Authentication Audit</p>
-      </div>
-      <div class="item_wrap">
-        <p class="icon_wrap no-m">
-          <img class="img-but" src="/assets/social.svg" alt="soc">
-        </p>
-        <p class="item-title">Contextual Element</p>
-      </div>
+     </div>
     </div>
     
     <!-- <div *ngFor="let item of types" class="bpm-item">
@@ -112,16 +58,9 @@
         [title]="item" tooltipPosition="top">
         {{item}}
       </div>
-    </div>
-    <div class="el_wrap">
-      <div id="AND" class="rhombus-wrap" [draggable]="true">
-        <p class="m-text">AND</p>
-      </div>
-      <div id="OR" class="rhombus-wrap" [draggable]="true">
-        <p class="m-text">or</p>
-      </div>
-    </div>
-    <div class="el_wrap">
+    </div> -->
+ 
+    <!-- <div class="el_wrap">
       <div style="cursor: pointer;" (click)="arrowSelect()">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path d="M24 11.871l-5-4.871v3h-19v4h19v3z" /></svg></div>
@@ -138,17 +77,17 @@
   </div>
   <div [ngClass]="{ show: showSide }" *ngIf="selectedModal && newItem" class="sidebar show">
     <div class="cont__wrap">
-      <p class="m-title">Rule Details</p>
+      <p class="m-title">{{newItem.group}}</p>
       <div class="rule-row__gen">
         <label for="key" class="r-name">Key</label>
         <input [(ngModel)]="newItem.key" type="text" class="input-gen" placeholder="key" id="key">
       </div>
-      <div class="rule-row__gen">
+      <!-- <div class="rule-row__gen">
         <label for="type" class="r-name">Attribute</label>
         <select type="text" class="input-gen sel" [(ngModel)]="newItem.attribute" (ngModelChange)="changeAttr($event)">
           <option *ngFor="let item of selectedData['name' + newItem.objectClass]">{{item}}</option>
         </select>
-      </div>
+      </div> -->
       <div class="rule-row__gen">
         <label for="key" class="r-name">Name</label>
         <input [(ngModel)]="newItem.name" type="text" class="input-gen" placeholder="Name" id="name">
@@ -169,19 +108,19 @@
       </div>
       <div class="rule-row__gen">
         <label for="type" class="r-name">Operation</label>
-        <select type="text" class="input-gen sel" [(ngModel)]="newItem.operations">
-          <option *ngFor="let item of selectedData['operations' + newItem.objectClass + newItem.attribute]">{{item}}</option>
+        <select type="text" class="input-gen sel" [(ngModel)]="newItem.operation">
+          <option *ngFor="let item of newItem.operations">{{item}}</option>
         </select>
       </div>
-      <div *ngIf="selectedData['values' + newItem.objectClass + newItem.attribute]" class="rule-row__gen">
+      <div *ngIf="newItem.values" class="rule-row__gen">
         <label for="type" class="r-name">Value</label>
         <select type="text" class="input-gen sel" [(ngModel)]="newItem.value">
-          <option *ngFor="let item of selectedData['values' + newItem.objectClass + newItem.attribute]">{{item}}</option>
+          <option *ngFor="let item of newItem.values">{{item}}</option>
         </select>
       </div>
-      <div *ngIf="!selectedData['values' + newItem.objectClass + newItem.attribute]" class="rule-row__gen">
+      <div *ngIf="!newItem.values" class="rule-row__gen">
         <label for="type" class="r-name">Value</label>
-        <input [(ngModel)]="newItem.valueText" type="text" class="input-gen" placeholder="value" id="valuetext">
+        <input [(ngModel)]="newItem.value" type="text" class="input-gen" placeholder="value" id="valuetext">
       </div>
       <!-- <div *ngFor="let item of newItem.attributes">
         <div *ngIf="item.type === 'string' && !item.values" class="rule-row__gen">

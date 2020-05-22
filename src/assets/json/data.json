@@ -4,6 +4,7 @@
     ],
     "options" : [{
 		"name": "Data Model",
+		"icon": "business",
 		"attributes": [{
 				"name": "name",
 				"type": "string",
@@ -44,6 +45,7 @@
 	},
 	{
 		"name": "Authentication Means",
+		"icon": "hammer",
 		"attributes": [{
 				"name": "push",
 				"type": "string",
@@ -69,6 +71,7 @@
 	},
 	{
 		"name": "Authentication Audit",
+		"icon": "social",
 		"attributes": [{
 				"name": "numberOfAuthPwd",
 				"type": "integer",

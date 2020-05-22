@@ -79,12 +79,18 @@ export class MainComponent implements OnInit, AfterViewInit {
   settings = {}
   selectedData = {}
   optionsData;
+  icons = {};
+  attributeOptions = {};
   ngAfterViewInit() {
     this.http.get("./assets/json/data.json").subscribe((res: any) => {
       this.data = res.data;
       for(let i = 0; i < res.options.length; i++) {
         let item = res.options[i];
-        this.types.push(item.name);
+        for(let attribute of item.attributes){
+          this.types.push(item.name+'-'+attribute.name);
+          this.icons[item.name] = item.icon;
+          this.attributeOptions[item.name+'-'+attribute.name] = attribute;
+        }
         this.optionsData = res.options;
         this.colors[item.name] = this.colorsArr[i];
         this.text[item.name] = "#fff";
@@ -97,7 +103,6 @@ export class MainComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.drow();
         this.init();
-        console.log(this.selectedData);
         
       }, 1000);
 
@@ -264,7 +269,7 @@ export class MainComponent implements OnInit, AfterViewInit {
         .attr("id", "drowLine")
         .attr("d", link(d))
         .style("fill", "none")
-        .style("stroke", "#555")
+        .style("stroke", "red")
         .attr("stroke-opacity", 0.4)
         .attr("stroke-width", 1.5);
 
@@ -304,7 +309,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     .append("path")
     .attr("class", "path")
     .attr("d", "M 0 0 12 6 0 12 3 6")
-    .style("fill", "#999");
+    .style("fill", "red");
   }
 
   
@@ -328,11 +333,12 @@ export class MainComponent implements OnInit, AfterViewInit {
 
             dx = element.x - 10;
             dy = element.y - 8;
-            color = this.colors[element.objectClass];
+            // color = this.colors[element.objectClass];
+            color = '#f6f7fa'
             count = 0;
             countS = 0;
             h = (65 + (count > 3 ? ((count - 3) * 27 + ( countS * 5) + (count * 5)) : 0+ ( countS * 5)));
-            selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "";
+            selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "stroke-width:1;stroke:#58a6c8";
             g = this.conteiner.append("g").attr("class", "g");
     
               g.append("rect")
@@ -344,8 +350,8 @@ export class MainComponent implements OnInit, AfterViewInit {
                 .attr("y", element.y - 10)
                 .attr("width", 50)
                 .attr("height", 50)
-                .attr("rx", 15)
-                .attr("ry", 15)
+                .attr("rx", 50)
+                .attr("ry", 50)
    
                 .call(
                   d3
@@ -374,15 +380,15 @@ export class MainComponent implements OnInit, AfterViewInit {
                     document.documentElement.style.cursor = "not-allowed";
                   }
                 })
-                .on("click", (d, i, s) => {
-                  d3.event.stopPropagation();
-                  this.selectedModal = s[0].id;
-                  this.selected = s[0].id;
-                  this.removeAll();
-                  this.drow();
-                  if (this.activeArrow)
-                    this.shepClick(s[0].id);
-                })
+                // .on("click", (d, i, s) => {
+                //   d3.event.stopPropagation();
+                //   this.selectedModal = s[0].id;
+                //   this.selected = s[0].id;
+                //   this.removeAll();
+                //   this.drow();
+                //   if (this.activeArrow)
+                //     this.shepClick(s[0].id);
+                // })
                 .on("dblclick", (d, i, s) => {
                   this.selectedModal = s[0].id;
                   let name = this.data[this.selectedModal].objectClass + (this.data[this.selectedModal].parameters.length + 1);
@@ -394,75 +400,121 @@ export class MainComponent implements OnInit, AfterViewInit {
                   this.startDrowLine = null;
                 });
     
-              let  cg = g.append("g")
-              .attr("id", index + "-del")
-              ;
-              cg.append("circle")
-                .attr("class", "svg")
-                .attr("cx", element.x + 140)
-                .attr("cy", element.y - 13)
-                .attr("r", 11)
-                .attr("stroke", "black")
-                .attr("stroke-width", 2)
-                .attr("fill", "white");
+                g.append("rect")
+                .attr("class", "nodes")
+                .attr("id", index)
+                // .attr("style", selected)
+                .attr("fill", "#017bb0")
+                .attr("x", element.x + 85)
+                .attr("y", element.y + 10)
+                .attr("width", 10)
+                .attr("height", 10)
+                .attr("rx", 50)
+                .attr("ry", 50)
+                .on("click", (d, i, s) => {
+                  d3.event.stopPropagation();
+                  this.selectedModal = s[0].id;
+                  this.selected = s[0].id;
+                  this.removeAll();
+                  this.drow();
+                  // this.arrowSelect();
+                  // if (this.activeArrow)
+
+                    this.shepClick(s[0].id, 'left');
+                })
+                //------arrowSelect()
+                g.append("rect")
+                .attr("class", "nodes")
+                .attr("id", index)
+                // .attr("style", selected)
+                .attr("fill", "#017bb0")
+                .attr("x", element.x + 135)
+                .attr("y", element.y + 10)
+                .attr("width", 10)
+                .attr("height", 10)
+                .attr("rx", 50)
+                .attr("ry", 50)
+                .on("click", (d, i, s) => {
+                  d3.event.stopPropagation();
+                  this.selectedModal = s[0].id;
+                  this.selected = s[0].id;
+                  this.removeAll();
+                  this.drow();
+                  // this.arrowSelect();
+                  // if (this.activeArrow)
+
+                    this.shepClick(s[0].id, 'right');
+                })
+              // let  cg = g.append("g")
+              // .attr("id", index + "-del")
+              // ;
+              // cg.append("circle")
+              //   .attr("class", "svg")
+              //   .attr("cx", element.x + 140)
+              //   .attr("cy", element.y - 13)
+              //   .attr("r", 11)
+              //   .attr("stroke", "black")
+              //   .attr("stroke-width", 2)
+              //   .attr("fill", "white");
                 
-                cg.append("path")
-                .attr("transform", `translate(${element.x + 128},${element.y -25})`)
-                .attr("d", "M6.25,6.25,17.75,17.75")
-                .attr("stroke", "black")
-                .attr("stroke-width", 3)
-                .attr("fill", "none");
-                cg.append("path")
-                .attr("transform", `translate(${element.x + 128},${element.y -25})`)
-                .attr("d", "M6.25,17.75,17.75,6.25")
-                .attr("stroke", "black")
-                .attr("stroke-width", 3)
-                .attr("fill", "none")
+              //   cg.append("path")
+              //   .attr("transform", `translate(${element.x + 128},${element.y -25})`)
+              //   .attr("d", "M6.25,6.25,17.75,17.75")
+              //   .attr("stroke", "black")
+              //   .attr("stroke-width", 3)
+              //   .attr("fill", "none");
+              //   cg.append("path")
+              //   .attr("transform", `translate(${element.x + 128},${element.y -25})`)
+              //   .attr("d", "M6.25,17.75,17.75,6.25")
+              //   .attr("stroke", "black")
+              //   .attr("stroke-width", 3)
+              //   .attr("fill", "none")
               // g.append("text")
               //   .attr("id", index + "-remove")
               //   .attr("x", element.x + 140)
               //   .attr("y", element.y - 13)
               //   .attr("class", "boxclose")
               //   .text("x")
-              cg.attr("cursor", "pointer")
-                .on("click", (d, i, s) => {
-                  d3.event.stopPropagation();
-                  let id = s[0].id.split("-")[0];
-                  console.log(s[0].id);
+              // cg.attr("cursor", "pointer")
+              //   .on("click", (d, i, s) => {
+              //     d3.event.stopPropagation();
+              //     let id = s[0].id.split("-")[0];
+              //     console.log(s[0].id);
                  
-                  const dialogRef = this.dialog.open(DialogCreateModelComponent, {
-                    width: '450px',
-                    data: {
-                      label: 'You delete the object! Are you sure?',
-                      deleteMode: true
-                    }
-                  });
-                  dialogRef.afterClosed().subscribe(model => {
-                    if (model) {
-                     console.log(model,id);
-                     for (let index = 0; index < this.data.length; index++) {
-                       const element = this.data[index];
-                       let s = element.selectedIn.indexOf(this.data[id].id);
-                        element.selectedIn.splice(s,1);
+              //     const dialogRef = this.dialog.open(DialogCreateModelComponent, {
+              //       width: '450px',
+              //       data: {
+              //         label: 'You delete the object! Are you sure?',
+              //         deleteMode: true
+              //       }
+              //     });
+              //     dialogRef.afterClosed().subscribe(model => {
+              //       if (model) {
+              //        console.log(model,id);
+              //        for (let index = 0; index < this.data.length; index++) {
+              //          const element = this.data[index];
+              //          let s = element.selectedIn.indexOf(this.data[id].id);
+              //           element.selectedIn.splice(s,1);
 
-                       let sIn = element.selected.indexOf(this.data[id].id);
-                        element.selected.splice(sIn,1);
-                       console.log(element);
+              //          let sIn = element.selected.indexOf(this.data[id].id);
+              //           element.selected.splice(sIn,1);
+              //          console.log(element);
                        
-                     }
-                     this.data.splice(+id, 1);
-                     this.removeAll();
-                     this.drow();
-                    }
-                  });
+              //        }
+              //        this.data.splice(+id, 1);
+              //        this.removeAll();
+              //        this.drow();
+              //       }
+              //     });
     
-                });
+              //   });
 
           g.append("text")
             .attr("x", element.x+105 + (element.objectClass === "AND" ? -8 : 0))
             .attr("id", index + "-text")
             .attr("y", element.y + 20)
-            .attr("fill", "white")
+            .attr("fill", "black")
+            .attr("font-family", "Open sans-serif")
             .text(element.objectClass) .call(
               d3
                 .drag()
@@ -517,11 +569,52 @@ export class MainComponent implements OnInit, AfterViewInit {
  dx = element.x - 10;
  dy = element.y - 8;
  color = this.colors[element.objectClass];
+ color = '#f6f7fa'
  count = 0;
  countS = 0;
+ let type = element.objectClass.split("-")[0];
  h = (65 + (count > 3 ? ((count - 3) * 27 + ( countS * 5) + (count * 5)) : 0+ ( countS * 5)));
- selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "";
+ selected = (this.selected !== null && (+this.selected === +index)) ? "stroke-width:1;stroke:rgb(0,0,0)" : "stroke-width:1;stroke:#58a6c8";
  g = this.conteiner.append("g").attr("class", "g");
+ g   .attr("id", index)
+ g.call(
+  d3
+    .drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended)
+)
+   
+g.on("mouseover", (q, w, e) => {
+  d3.event.stopPropagation();
+  if (this.activeArrow) {
+    document.documentElement.style.cursor = "default";
+    d3.select(document.getElementById(e[0].id + "main")).style(
+      "fill",
+      "#84bd96"
+    );
+  }
+})
+g.on("mouseout", (q, w, e) => {
+  d3.event.stopPropagation();
+  d3.select(document.getElementById(e[0].id + "main")).style(
+    "fill",
+    "#2196f3"
+  );
+  if (this.activeArrow) {
+    document.documentElement.style.cursor = "not-allowed";
+  }
+})
+g.on("click", (d, i, s) => {
+  d3.event.stopPropagation();
+  this.selectedModal = s[0].id;
+  this.selected = s[0].id;
+  this.removeAll();
+  this.drow();
+  if (this.activeArrow)
+    this.shepClick(s[0].id);
+})
+
  g.append("rect")
    .attr("class", "nodes")
    .attr("id", index)
@@ -529,240 +622,189 @@ export class MainComponent implements OnInit, AfterViewInit {
    .attr("fill", color)
    .attr("x", element.x - 5)
    .attr("y", element.y - 10)
-   .attr("width", 140)
-   .attr("height", 35)
-   .attr("rx", 10)
-   .attr("ry", 10)
-   .call(
-     d3
-       .drag()
-       .on("start", dragstarted)
-       .on("drag", dragged)
-       .on("end", dragended)
-   )
-   .on("mouseover", (q, w, e) => {
-     d3.event.stopPropagation();
-     if (this.activeArrow) {
-       document.documentElement.style.cursor = "default";
-       d3.select(document.getElementById(e[0].id + "main")).style(
-         "fill",
-         "#84bd96"
-       );
-     }
-   })
-   .on("mouseout", (q, w, e) => {
-     d3.event.stopPropagation();
-     d3.select(document.getElementById(e[0].id + "main")).style(
-       "fill",
-       "#2196f3"
-     );
-     if (this.activeArrow) {
-       document.documentElement.style.cursor = "not-allowed";
-     }
-   })
+   .attr("width", 200)
+   .attr("height", 135)
+   .attr("rx", 5)
+   .attr("ry", 5).on("dblclick", (d, i, s) => {
+    
+    this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
+    this.selectedModal = s[0].id;
+    let item = this.attributeOptions[this.data[this.selectedModal].objectClass];
+    this.newItem.group = this.data[this.selectedModal].objectClass.split('-')[0];
+    this.newItem.type = item.type;
+    this.newItem.operations = item.operations;
+    this.newItem.values = item.values;
+    // this.newItem.attribute = this.selectedData["name" + this.data[this.selectedModal].objectClass][0];
+    // this.newItem.type = 
+    // this.getElementsByAttributs(this.newItem.attribute, 'type', this.data[this.selectedModal].objectClass);
+    // this.selectedData['operations' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
+    // this.getElementsByAttributs(this.newItem.attribute, 'operations', this.data[this.selectedModal].objectClass);
+    // this.selectedData['values' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
+    // this.getElementsByAttributs(this.newItem.attribute, 'values', this.data[this.selectedModal].objectClass);
+    
+    let name = this.data[this.selectedModal].objectClass;
+    this.showSide = true;
+    this.selected = s[0].id;
+    this.removeAll();
+    this.drow();
+    this.activeArrow = null;
+    this.startDrowLine = null;
+  });
+
+  g.append("rect")
+  .attr("class", "nodes")
+  .attr("id", index)
+  // .attr("style", selected)
+  .attr("fill", "#017bb0")
+  .attr("x", element.x - 10)
+  .attr("y", element.y + 60)
+  .attr("width", 10)
+  .attr("height", 10)
+  .attr("rx", 50)
+  .attr("ry", 50)
+  g.append("rect")
+  .attr("class", "nodes")
+  .attr("id", index)
+  // .attr("style", selected)
+  .attr("fill", "#017bb0")
+  .attr("x", element.x + 190)
+  .attr("y", element.y + 60)
+  .attr("width", 10)
+  .attr("height", 10)
+  .attr("rx", 50)
+  .attr("ry", 50)
+  .on("click", (d, i, s) => {
+    d3.event.stopPropagation();
+    this.selectedModal = s[0].id;
+    this.selected = s[0].id;
+    this.removeAll();
+    this.drow();
+    // this.arrowSelect();
+    // if (this.activeArrow)
+
+      this.shepClick(s[0].id, 'left');
+  })
+   g.append("rect")
+   .attr("class", "nodes")
+  //  .attr("style", selected)
+   .attr("fill", "#daedf8")
+   .attr("x", element.x)
+   .attr("y", element.y - 4)
+   .attr("width", 190)
+   .attr("height", 30)
    .on("click", (d, i, s) => {
-     d3.event.stopPropagation();
-     this.selectedModal = s[0].id;
-     this.selected = s[0].id;
-     this.removeAll();
-     this.drow();
-     if (this.activeArrow)
-       this.shepClick(s[0].id);
-   })
-   .on("dblclick", (d, i, s) => {
-     this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
-     this.selectedModal = s[0].id;
-     
-     this.newItem.attribute = this.selectedData["name" + this.data[this.selectedModal].objectClass][0];
-     this.newItem.type = 
-     this.getElementsByAttributs(this.newItem.attribute, 'type', this.data[this.selectedModal].objectClass);
-     this.selectedData['operations' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
-     this.getElementsByAttributs(this.newItem.attribute, 'operations', this.data[this.selectedModal].objectClass);
-     this.selectedData['values' + this.data[this.selectedModal].objectClass + this.newItem.attribute] = 
-     this.getElementsByAttributs(this.newItem.attribute, 'values', this.data[this.selectedModal].objectClass);
-     console.log(this.selectedData);
-     
-     let name = this.data[this.selectedModal].objectClass;
-     this.showSide = true;
-     this.selected = s[0].id;
-     this.removeAll();
-     this.drow();
-     this.activeArrow = null;
-     this.startDrowLine = null;
-   });
- g.append("svg")
-   .attr("x", element.x + 5)
-   .attr("y", element.y - 5)
+    d3.event.stopPropagation();
+    this.selectedModal = s[0].id;
+    this.selected = s[0].id;
+    this.removeAll();
+    this.drow();
+    // this.arrowSelect();
+    // if (this.activeArrow)
+
+      this.shepClick(s[0].id, 'right');
+  })
+   g.append("text")
+     .attr("id", index + "-text")
+    .attr("font-family", "Open Sans")
+    .attr("x", element.x + 25)
+     .attr("y", element.y + 15)
+     .attr("font-weight", "bold")
+     .text(element.name)
+     .attr("cursor", "pointer")
+
+   g.append("text")
+   .attr("id", index + "-text")
+   .attr("x", element.x + 10)
+   .attr("y", element.y + 60)
+   .attr("font-weight", "bold")
+   .attr("font-family", "Open Sans")
+   .attr("font-size", "14px")
+   .text("Key:")
+   .attr("cursor", "pointer");
+   g.append("text")
+   .attr("id", index + "-text")
+   .attr("x", element.x + 10)
+   .attr("y", element.y + 75)
+   .attr("font-weight", "bold")
+   .attr("font-family", "Open Sans")
+   .attr("font-size", "14px")
+   .text("Operation:")
+   .attr("cursor", "pointer");
+   g.append("text")
+   .attr("id", index + "-text")
+   .attr("x", element.x + 10)
+   .attr("y", element.y + 90)
+   .attr("font-weight", "bold")
+   .attr("font-family", "Open Sans")
+   .attr("font-size", "14px")
+   .text("Value:")
+   .attr("cursor", "pointer");
+  //  ----------------
+   g.append("text")
+   .attr("id", index + "-text")
+   .attr("x", element.x + 40)
+   .attr("y", element.y + 60)
+   .attr("font-family", "Open Sans")
+   .attr("font-size", "14px")
+   .text(element.key || "xxxx")
+   .attr("cursor", "pointer");
+   g.append("text")
+   .attr("id", index + "-text")
+   .attr("x", element.x + 85)
+   .attr("y", element.y + 75)
+   .attr("font-family", "Open Sans")
+   .attr("font-size", "14px")
+   .text(element.operation || "xxxx")
+   .attr("cursor", "pointer");
+   g.append("text")
+   .attr("id", index + "-text")
+   .attr("x", element.x + 53)
+   .attr("y", element.y + 90)
+   .attr("font-family", "Open Sans")
+   .attr("font-size", "14px")
+   .text(element.value || "xxxx")
+   .attr("cursor", "pointer");
+
+   g.append("rect")
+   .attr("class", "nodes")
+  //  .attr("id", index)
+   .attr("style", selected)
+   .attr("fill", "white")
+    .attr("x", element.x - 20)
+   .attr("y", element.y - 30)
+   .attr("width", 40)
+   .attr("height", 40)
+   .attr("rx", 50)
+   .attr("ry", 50)
+   g.append("image")
+   .attr("x", element.x - 13)
+   .attr("y", element.y - 23)
    .attr("width", 24)
    .attr("height", 24)
-   .attr("viewBox", "0 0 24 24")
-   .append("path")
-   .attr("d", "M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z")
+   .attr("xlink:href", `/assets/${this.icons[type]}.svg`)
+   g.append("line")
+   .attr("x1", element.x - 5)
+   .attr("y1", element.y + 33)
+   .attr("x2", element.x + 195)
+   .attr("y2", element.y + 33)
+   .attr("stroke", "#58a6c8")
+   
+  //  .append("path")
+  //  .attr("d", "M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z")
    // .text((element.name || element.id));
  // g.append("text")
  //   .attr("x", element.x - 5)
  //   .attr("y", element.y - 13)
  //   .text((element.name || element.id));
-   if(element.key){
-   g.append("text")
-     .attr("id", index + "-text")
-     .attr("x", element.x + 40)
-     .attr("y", element.y + 13)
-     .text(element.key)
-     .attr("cursor", "pointer")
-     .call(
-      d3
-        .drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended)
-    )
-    .on("mouseover", (q, w, e) => {
-      d3.event.stopPropagation();
-      if (this.activeArrow) {
-        document.documentElement.style.cursor = "default";
-        d3.select(document.getElementById(e[0].id + "main")).style(
-          "fill",
-          "#84bd96"
-        );
-      }
-    })
-    .on("mouseout", (q, w, e) => {
-      d3.event.stopPropagation();
-      d3.select(document.getElementById(e[0].id + "main")).style(
-        "fill",
-        "#2196f3"
-      );
-      if (this.activeArrow) {
-        document.documentElement.style.cursor = "not-allowed";
-      }
-    })
-    .on("click", (d, i, s) => {
-      d3.event.stopPropagation();
-      let id = s[0].id.split("-")
-      console.log(id[0]);
 
-      this.selectedModal = id[0];
-      this.selected = id[0];
-      this.removeAll();
-      this.drow();
-      if (this.activeArrow)
-        this.shepClick(id[0]);
-    })
-    .on("dblclick", (d, i, s) => {
-      this.newItem = this.data[s[0].id] ? this.data[s[0].id] : new ComponentClass();
-      this.selectedModal = s[0].id;
-      let name = this.data[this.selectedModal].objectClass;
-      this.showSide = true;
-      this.selected = s[0].id;
-      this.removeAll();
-      this.drow();
-      this.activeArrow = null;
-      this.startDrowLine = null;
-    });
-   }
 
-   let  cg = g.append("g")
-   .attr("id", index + "-del");
-   cg.append("circle")
-     .attr("class", "svg")
-     .attr("cx", element.x + 140)
-     .attr("cy", element.y - 13)
-     .attr("r", 11)
-     .attr("stroke", "black")
-     .attr("stroke-width", 2)
-     .attr("fill", "white");
-     
-     cg.append("path")
-     .attr("transform", `translate(${element.x + 128},${element.y -25})`)
-     .attr("d", "M6.25,6.25,17.75,17.75")
-     .attr("stroke", "black")
-     .attr("stroke-width", 3)
-     .attr("fill", "none");
-     cg.append("path")
-     .attr("transform", `translate(${element.x + 128},${element.y -25})`)
-     .attr("d", "M6.25,17.75,17.75,6.25")
-     .attr("stroke", "black")
-     .attr("stroke-width", 3)
-     .attr("fill", "none")
-   // g.append("text")
-   //   .attr("id", index + "-remove")
-   //   .attr("x", element.x + 140)
-   //   .attr("y", element.y - 13)
-   //   .attr("class", "boxclose")
-   //   .text("x")
-//  g.append("text")
-//    .attr("id", index + "-remove")
-//    .attr("x", element.x + 140)
-//    .attr("y", element.y - 13)
-//    .text("X")
-//    .attr("cursor", "pointer")
-cg.on("click", (d, i, s) => {
-     d3.event.stopPropagation();
-     let id = s[0].id.split("-")[0];
-    
-     const dialogRef = this.dialog.open(DialogCreateModelComponent, {
-       width: '450px',
-       data: {
-         label: 'You delete the object! Are you sure?',
-         deleteMode: true
-       }
-     });
-     dialogRef.afterClosed().subscribe(model => {
-       if (model) {
-        console.log(model,id);
-        for (let index = 0; index < this.data.length; index++) {
-          
-          const element = this.data[index];
-          let s = element.selectedIn.indexOf(this.data[id].id);
-          if(s) {
-           element.selectedIn.splice(s,1);
-          }
-
-          let sIn = element.selected.indexOf(this.data[id].id);
-          if(sIn) {
-           element.selected.splice(sIn,1);
-          }
-        }
-        this.data.splice(+id, 1);
-        this.removeAll();
-        this.drow();
-       }
-     });
-   });
-
- // g.append("text")
- //   .attr("id", index + "-arrow")
- //   .attr("x", element.x + 135)
- //   .attr("y", element.y + 5)
- //   .text("=>")
- //   .attr("cursor", "pointer")
- //   .on("click", (d, i, s) => {
- //     d3.event.stopPropagation();
- //     let id = s[0].id.split("-")[0];
- //     this.shepClick(id);
- //   });
-
- // g.append("text")
- //   .attr("id", index + "-drag")
- //   .attr("x", element.x)
- //   .attr("y", element.y + 5)
- //   .text("|||")
- //   .attr("cursor", "pointer")
- //   .call(
- //     d3
- //       .drag()
- //       .on("start", dragstarted)
- //       .on("drag", dragged)
- //       .on("end", dragended)
- //   );
       }
       if (this.marker)
         this.marker
           .append("path")
           .attr("class", "path")
           .attr("d", "M 0 0 12 6 0 12 3 6")
-          .style("fill", "#999");
+          .style("fill", "#ff5722");
       let self = this;
 
       function dragstarted(d) {
@@ -822,6 +864,16 @@ cg.on("click", (d, i, s) => {
     });
     
   }
+  k = 1
+  zoomPlus() {
+    this.k += 0.1;
+    this.zoom.scaleTo(this.vis, this.k);
+  }
+
+  zoomMinus() {
+    this.k -= 0.1;
+    this.zoom.scaleTo(this.vis, this.k);
+  }
 
   clickArrow;
 
@@ -833,15 +885,69 @@ cg.on("click", (d, i, s) => {
   drowLines() {
     this.data.forEach((value, index, arr) => {
       value.selected.forEach(item => {
+       
+        let firstSide = item.split('#')[1];
+        let secondSide;
+        item = item.split('#')[0];
+
         let to = this.searchById(item, this.data, 'id');
         let from = this.data[index];
+      
         if (to) {
+          for (const it of to.selectedIn) {
+            let id = it.split('#')[0];
+            
+            if(id === from.id){
+              secondSide = it.split('#')[1];
+            }
+          }
           let x = +from.x;
           let y = +from.y;
           let x2 = +to.x;
           let y2 = +to.y;
           let minX = Math.abs(x - x2);
           let minY = Math.abs(y - y2);
+
+          if(from.objectClass === "OR" || from.objectClass === "AND") {
+            if(firstSide === 'left') {
+              x += 8;
+            } else {
+              x -= 8;
+            }
+          } else {
+            // if(firstSide === 'left') {
+            //   x -= 148;
+            //   y -= 148;
+            // } else {
+            //   x -= 48;
+            // }
+         
+          }
+
+          if(to.objectClass === "OR" || to.objectClass === "AND") {
+            // if(firstSide === 'left') {
+            //   x += 8;
+            // } else {
+            //   x -= 8;
+            // }
+          } else {
+            // if(firstSide === 'left') {
+            //   x -= 148;
+            //   y -= 148;
+            // } else {
+            //   x -= 48;
+            // }
+            
+            if(secondSide === 'left') {
+              x2 += 80;
+              y2 += 50;
+            } else {
+              x2 -= 95;
+              y2 += 50;
+            }
+          }
+
+
           if (minX > minY) {
             if (+x < +x2) {
               x += 25;
@@ -863,11 +969,11 @@ cg.on("click", (d, i, s) => {
           var d = {
             source: {
               x: x + 110,
-              y: y + 10
+              y: y + 15
             },
             target: {
               x: x2 + 110,
-              y: y2 + 10
+              y: y2 + 15
             }
           };
 
@@ -886,7 +992,7 @@ cg.on("click", (d, i, s) => {
             .attr("id", from.id + to.id)
             .attr("class", "path")
             .style("fill", "none")
-            .style("stroke", "#555")
+            .style("stroke", "red")
             .attr("stroke-opacity", 0.4)
             .attr("stroke-width", 1.5)
             .attr("marker-mid", "url(#triangle)");
@@ -896,7 +1002,7 @@ cg.on("click", (d, i, s) => {
             .attr("class", "path")
             .attr("d", link(d))
             .style("fill", "none")
-            .style("stroke", "#555")
+            .style("stroke", "red")
             .attr("stroke-opacity", 0)
             .attr("stroke-width", 15)
             .on("click", () => {
@@ -921,7 +1027,7 @@ cg.on("click", (d, i, s) => {
               );
               d3.select(document.getElementById(from.id + to.id)).style(
                 "stroke",
-                "black"
+                "red"
               );
 
             });
@@ -1005,7 +1111,6 @@ cg.on("click", (d, i, s) => {
           y = (ev.offsetY - this.zoomTrans.y) / this.zoomTrans.k;
         }
         ev.preventDefault();
-        console.log(this.data);
         
         let model = new ComponentClass();
         model.x = x - 100;
@@ -1017,8 +1122,6 @@ cg.on("click", (d, i, s) => {
        
         this.data.push(model);
         
-        console.log(this.data);
-
         this.drow();
       },
       false
@@ -1066,11 +1169,16 @@ cg.on("click", (d, i, s) => {
     // });
 
   }
-
-  shepClick(s) {
+  firstSide;
+  secondSide;
+  shepClick(s, side?) {
     this.selected = s;
     let id = this.selected;
-    console.log(this.data[this.selected].objectClass, id);
+    if(!this.firstSide){
+      this.firstSide = side;
+    } else {
+      this.secondSide = side;
+    }
 
     if (!this.startDrowLine) {
       this.activeArrow = id;
@@ -1134,18 +1242,16 @@ cg.on("click", (d, i, s) => {
       }
 
       if (id !== this.activeArrow) {
-        this.data[this.activeArrow].selected.push(this.data[id].id);
-        this.data[this.selected].selectedIn.push(this.data[this.activeArrow].id);
+        this.data[this.activeArrow].selected.push(this.data[id].id + '#' + this.secondSide);
+        this.data[this.selected].selectedIn.push(this.data[this.activeArrow].id + '#' + this.firstSide);
+        this.firstSide = null;
+        this.secondSide = null;
         // this.txtQueryChanged.next({
         //   value: "query",
         //   selected: this.activeArrow
         // });
       }
     
-      console.log(this.data[this.activeArrow].selectedIn,
-        this.data[this.activeArrow].selected, 222);
-      console.log(this.data[this.selected].selectedIn, 
-        this.data[this.selected].selected, 222);
       this.activeArrow = null;
       this.startDrowLine = null;
 
@@ -1175,7 +1281,6 @@ cg.on("click", (d, i, s) => {
   }
 
   saveForm(){
-    console.log(this.optionsModal[this.selectedModal]);
     this.data[this.selectedModal].key = this.newItem.key;
     this.removeAll();
     this.drow();
@@ -1226,4 +1331,45 @@ cg.on("click", (d, i, s) => {
     this.getElementsByAttributs(this.newItem.attribute, 'values', this.data[this.selectedModal].objectClass);
     
   }
+
+  deleteElement() {
+      const dialogRef = this.dialog.open(DialogCreateModelComponent, {
+          width: '450px',
+          data: {
+            label: 'You delete the object! Are you sure?',
+            deleteMode: true
+          }
+        });
+        dialogRef.afterClosed().subscribe(model => {
+          if (model) {
+            if(this.selected){
+              for (let index = 0; index < this.data.length; index++) {
+                const element = this.data[index];
+                let s = element.selectedIn.indexOf(this.data[this.selected].id);
+                element.selectedIn.splice(s,1);
+  
+                let sIn = element.selected.indexOf(this.data[this.selected].id);
+                element.selected.splice(sIn,1);
+              }
+              this.data.splice(this.selected, 1);
+            }
+
+            if(this.selectedLine) {
+              for (let index = 0; index < this.data.length; index++) {
+                const element = this.data[index];
+                let s = element.selectedIn.indexOf(this.selectedLineFrom);
+                element.selectedIn.splice(s,1);
+  
+                let sIn = element.selected.indexOf(this.selectedLineTo);
+                element.selected.splice(sIn,1);
+              }
+            }
+            
+            this.removeAll();
+            this.drow();
+          }
+        });
+  }
+
+
 }
